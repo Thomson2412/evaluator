@@ -1,0 +1,74 @@
+/* General */
+:root {
+  --primary: #bdbdbd;
+  --p_dark: #8d8d8d;
+  --p_light: #efefef;
+
+  --secondary: #9fa8da;
+  --s_dark: #6f79a8;
+  --s_light: #d1d9ff;
+}
+
+body{
+  background-color: var(--primary);
+  color: #424242;
+  font-family: Lexend Deca, sans-serif;
+}
+
+button{
+  padding: 10px;
+  margin: 10px;
+  background-color: var(--secondary);
+  border-radius: 5px;
+  border: 0;
+  font-size: 1.2em;
+}
+
+button:hover{
+  background-color: var(--s_dark);
+  cursor: pointer;
+}
+
+.evaluatorTitle{
+  font-size: 2em;
+  text-align: center;
+  padding: 10px
+}
+
+.mainContainer{
+  margin-left: 1%;
+  margin-right: 1%;
+  padding: 1%;
+  text-align: center;
+  /*background-color: #ffffff;*/
+}
+
+.contentContainer{
+  margin: 1%;
+  padding: 1%;
+  text-align: center;
+  background-color: var(--p_light);
+  border-radius: 15px;
+}
+
+.questionContainer{
+  margin: 1%;
+  padding: 1%;
+  text-align: center;
+  background-color: var(--p_light);
+  border-radius: 15px;
+}
+
+.likertScale{
+  margin: 10px;
+}
+
+.likertScale label{
+  display:inline-block;
+  text-align:center;
+  margin:0 1.5em;
+}
+.likertScale label input[type="radio"] {
+  display:block;
+  margin:0.5em auto;
+}

@@ -1,0 +1,38 @@
+doctype html
+head
+    title Evaluator
+    link(rel='stylesheet' type='text/css' href='/css/css.css')
+    link(href='https://fonts.googleapis.com/css?family=Lexend Deca' rel='stylesheet')
+script(src='/js/jquery-3.6.0.min.js')
+script(src='/controllers/index.js')
+script.
+    $(document).ready(initClient);
+#evaluatorTitle.evaluatorTitle Evaluator
+#mainContainer.mainContainer
+    #contentContainer.contentContainer
+        img(src='img/marina-Eugene_Boudin-The_Cliffs_at_Etretat-1890-81441.jpg')
+    #questionContainer.questionContainer
+        .question Something something likert scale
+        form.likertScale(action='')
+            label
+                input(type='radio' name='likertScale' value='1')
+                | 1
+            label
+                input(type='radio' name='likertScale' value='2')
+                | 2
+            label
+                input(type='radio' name='likertScale' value='3')
+                | 3
+            label
+                input(type='radio' name='likertScale' value='4')
+                | 4
+            label
+                input(type='radio' name='likertScale' value='5')
+                | 5
+            label
+                input(type='radio' name='likertScale' value='6')
+                | 6
+            label
+                input(type='radio' name='likertScale' value='7')
+                | 7
+        button#submitAnswerButton(onclick='submitAnswer()') Submit answer
