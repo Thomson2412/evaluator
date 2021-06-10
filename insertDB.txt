@@ -1,0 +1,47 @@
+use evaluator
+db.createUser(
+  {
+    user: "evaluator",
+    pwd:  passwordPrompt(),   // or cleartext password
+    roles: [ { role: "readWrite", db: "evaluator" } ]
+  }
+)
+
+
+mongodb://myUserAdmin:3AUderPqMFL4sHP@192.168.178.8:27017/?authSource=admin
+mongodb://evaluator:gxCZ8a762P3xQXhF@192.168.178.8:27017/evaluator?authSource=evaluator
+
+try {
+  db.questions.insertMany( [
+    { type: 0, question: "Would you state that the artwork contains a lot of different colors?" },
+    { type: 0, question: "Would you describe the artwork as mostly saturated or pale?" },
+    { type: 0, question: "Would you describe the artwork as mostly light or dark?" },
+    { type: 0, question: "Would you describe the artwork as mostly smooth or rough?" },
+    { type: 1, question: "Would you state that the musical piece contains a lot of different chords?" },
+    { type: 1, question: "Would you describe the sound of the musical piece as mostly loud or quiet?" },
+    { type: 1, question: "Would you describe the notes of the musical piece as mostly high or low in pitch?" },
+    { type: 1, question: "Would you describe the sound of the musical piece as mostly smooth or rough?" },
+    { type: 1, question: "Would you describe the musical piece as pleasant?" },
+    { type: 2, question: "What painting is most fitting to the sound in your opinion?" },
+  ] );
+} catch (e) {
+  print (e);
+}
+
+try {
+  db.answers.insertMany( [
+    { qId: ObjectId("60c0d43f06a457233dc87488"), qType: 0, result: 4 },
+    { qId: ObjectId("60c0d43f06a457233dc8748c"), qType: 1, result: 5 },
+    { qId: ObjectId("60c0d43f06a457233dc8748d"), qType: 1, result: 7 },
+    { qId: ObjectId("60c0d43f06a457233dc87491"), qType: 2, result: 0 },
+  ] );
+} catch (e) {
+  print (e);
+}
+
+
+db.createCollection("answer",
+   {
+     autoIndexId: true,
+   }
+)

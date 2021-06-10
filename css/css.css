@@ -51,6 +51,12 @@ button:hover{
   border-radius: 15px;
 }
 
+.contentContainer img{
+  max-width:100%;
+  max-height: 60vh;
+  height:auto;
+}
+
 .questionContainer{
   margin: 1%;
   padding: 1%;
