@@ -7,13 +7,15 @@ const fs = require("fs");
 const {MongoClient} = require("mongodb");
 const httpPort = 3000;
 const httpsPort = 3443;
-const user = "evaluator";
-const db = "evaluator";
-const pass = "gxCZ8a762P3xQXhF";
-const uri = "mongodb://" + user + ":" + pass + "@192.168.178.8:27017/" + db + "?authSource=" + db;
-const client = new MongoClient(uri, {"useUnifiedTopology": true});
 
 async function main(){
+    const dbData = getDbData();
+    const user = dbData[0];
+    const db = dbData[1];
+    const pass = dbData[2];
+    const uri = "mongodb://" + user + ":" + pass + "@192.168.178.8:27017/" + db + "?authSource=" + db;
+    const client = new MongoClient(uri, {"useUnifiedTopology": true});
+
     app.set("view engine", "pug")
     app.use((req, res, next) => {
         if (req.secure) {
@@ -93,6 +95,16 @@ async function getQuestion(client) {
             return await client.db().collection("questions").find({_id: toGetId});
         }
     }
+}
+
+function getDbData(){
+    const dbConnectionData = fs.readFileSync(path.join(__dirname, "/private/dbData.txt"), "UTF-8")
+    const lines = dbConnectionData.split(/\r?\n/);
+    let result = [];
+    lines.forEach((line) => {
+        result.push(line)
+    });
+    return result
 }
 
 

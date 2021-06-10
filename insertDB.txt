@@ -7,10 +7,6 @@ db.createUser(
   }
 )
 
-
-mongodb://myUserAdmin:3AUderPqMFL4sHP@192.168.178.8:27017/?authSource=admin
-mongodb://evaluator:gxCZ8a762P3xQXhF@192.168.178.8:27017/evaluator?authSource=evaluator
-
 try {
   db.questions.insertMany( [
     { type: 0, question: "Would you state that the artwork contains a lot of different colors?" },
