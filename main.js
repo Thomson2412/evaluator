@@ -32,8 +32,8 @@ async function main(){
     app.use("/css", express.static(path.join(__dirname, "css/")));
     app.use("/img", express.static(path.join(__dirname, "img/")));
 
-    let privateKey  = fs.readFileSync(path.join(__dirname, "/selfsigned.key"));
-    let certificate = fs.readFileSync(path.join(__dirname, "/selfsigned.crt"));
+    let privateKey  = fs.readFileSync(path.join(__dirname, "/private/selfsigned.key"));
+    let certificate = fs.readFileSync(path.join(__dirname, "/private/selfsigned.crt"));
     let credentials = {key: privateKey, cert: certificate};
 
     let httpServer = http.createServer(app);
