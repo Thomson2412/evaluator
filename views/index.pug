@@ -2,37 +2,52 @@ doctype html
 head
     title Evaluator
     link(rel='stylesheet' type='text/css' href='/css/css.css')
-    link(href='https://fonts.googleapis.com/css?family=Lexend Deca' rel='stylesheet')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lexend Deca')
 script(src='/js/jquery-3.6.0.min.js')
 script(src='/controllers/index.js')
 script.
-    $(document).ready(initClient);
+    $(document).ready(() => {initClient('#{session}');});
 #evaluatorTitle.evaluatorTitle Evaluator
 #mainContainer.mainContainer
     #contentContainer.contentContainer
-        img(src='img/allegorical_painting-Arthur_Streeton-Spirit_of_the_drought-1895-65154.jpg')
+        if type === 0
+            #paintingContent
+                img(src="content/" + content).paintingContent
+        if type === 1
+            button#playPauseButton(onclick='playPauseAudio()')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
+            // - let content = "allegorical_painting-Arthur_Streeton-Spirit_of_the_drought-1895-65154.aiff"
+            audio#audioSource(src="content/" + content)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content) Here is a link to the audio instead.
+
+        if type === 2
+            #videoContent.videoContent
+                img(src="icons/outline_play_circle_filled_black_24dp.png")
     #questionContainer.questionContainer
         .question #{question}
-        form.likertScale(action='')
+        form#answerForm.answerForm(action='')
             label
-                input(type='radio' name='likertScale' value='1')
+                input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
                 | 1
             label
-                input(type='radio' name='likertScale' value='2')
+                input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
                 | 2
             label
-                input(type='radio' name='likertScale' value='3')
+                input(type='radio' name='answerForm' value='3' onclick='onFormClick()')
                 | 3
             label
-                input(type='radio' name='likertScale' value='4')
+                input(type='radio' name='answerForm' value='4' onclick='onFormClick()')
                 | 4
             label
-                input(type='radio' name='likertScale' value='5')
+                input(type='radio' name='answerForm' value='5' onclick='onFormClick()')
                 | 5
             label
-                input(type='radio' name='likertScale' value='6')
+                input(type='radio' name='answerForm' value='6' onclick='onFormClick()')
                 | 6
             label
-                input(type='radio' name='likertScale' value='7')
+                input(type='radio' name='answerForm' value='7' onclick='onFormClick()')
                 | 7
         button#submitAnswerButton(onclick='submitAnswer()') Submit answer

@@ -24,7 +24,7 @@ button{
   font-size: 1.2em;
 }
 
-button:hover{
+button:enabled:hover{
   background-color: var(--s_dark);
   cursor: pointer;
 }
@@ -51,7 +51,19 @@ button:hover{
   border-radius: 15px;
 }
 
-.contentContainer img{
+.paintingContent{
+  max-width:100%;
+  max-height: 60vh;
+  height:auto;
+}
+
+.audioContent{
+  width:100%;
+  height:auto;
+  filter: opacity(0.5) drop-shadow(0 0 0 var(--s_dark));
+}
+
+.videoContent{
   max-width:100%;
   max-height: 60vh;
   height:auto;
@@ -65,16 +77,16 @@ button:hover{
   border-radius: 15px;
 }
 
-.likertScale{
+.answerForm{
   margin: 10px;
 }
 
-.likertScale label{
+.answerForm label{
   display:inline-block;
   text-align:center;
   margin:0 1.5em;
 }
-.likertScale label input[type="radio"] {
+.answerForm label input[type="radio"] {
   display:block;
   margin:0.5em auto;
 }
