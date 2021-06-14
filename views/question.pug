@@ -1,0 +1,68 @@
+doctype html
+head
+    title Evaluator
+    link(rel='stylesheet' type='text/css' href='/css/css.css')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lexend Deca')
+    link(rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png")
+    link(rel="manifest" href="manifest/site.webmanifest")
+    link(rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5")
+    meta(name="msapplication-TileColor" content="#da532c")
+    meta(name="theme-color" content="#ffffff")
+script(src='/js/jquery-3.6.0.min.js')
+script(src='/controllers/question.js')
+script.
+    $(document).ready(() => {initClient('#{session}');});
+#evaluatorTitle.evaluatorTitle Evaluator
+#mainContainer.mainContainer
+    #contentContainer.contentContainer
+        if type === 0
+            #paintingContent
+                img(src="content/" + content).paintingContent
+        if type === 1
+            button#playPauseButton(onclick='playPauseAudio()')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
+            // - let content = "allegorical_painting-Arthur_Streeton-Spirit_of_the_drought-1895-65154.aiff"
+            #progressBar.progressBar
+            audio#audioSource(src="content/" + content)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content) Here is a link to the audio instead.
+        if type === 2
+            #videoContent.videoContent
+                img(src="icons/outline_play_circle_filled_black_24dp.png")
+    #questionContainer.questionContainer
+        .question #{question}
+        form#answerForm.answerForm(action='')
+            label
+                input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
+                | #{scaleLow}
+            label
+                input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
+                | 2
+            label
+                input(type='radio' name='answerForm' value='3' onclick='onFormClick()')
+                | 3
+            label
+                input(type='radio' name='answerForm' value='4' onclick='onFormClick()')
+                | 4
+            label
+                input(type='radio' name='answerForm' value='5' onclick='onFormClick()')
+                | 5
+            label
+                input(type='radio' name='answerForm' value='6' onclick='onFormClick()')
+                | 6
+            label
+                input(type='radio' name='answerForm' value='7' onclick='onFormClick()')
+                | #{scaleHigh}
+        button#submitAnswerButton(onclick='submitAnswer()') Submit answer
+.questionId Questions: #{qId}
+#confirmationContainer.confirmationContainer
+    .thankYouTitle Thank You!
+    img(src="img/draw-soft-and-cute-cartoon-animals.jpg").paintingContent
+    .thankYouMsg Your submission is very much appreciated :)
+    button#getNextQuestionButton(onclick='nextQuestion()')
+        span#getNextQuestionButtonText Give me another one! (
+        span#getNextQuestionButtonTextCountDown 5)

@@ -1,6 +1,8 @@
 let sessionId;
 let submitted = false;
 let audioElem;
+let nextQuestionCounter = 0;
+let nextQuestionThreshold = 5;
 
 function initClient(session){
   sessionId = session;
@@ -19,6 +21,12 @@ function initClient(session){
   });
   audioElem = $('#audioSource');
   if(audioElem){
+    audioElem.on('timeupdate', () => {
+      let currentTime = audioElem.get(0).currentTime;
+      let duration = audioElem.get(0).duration;
+      let progressPercentage = (currentTime / duration) * 100;
+      $('#progressBar').width(progressPercentage + '%')
+    });
     audioElem.on("ended", () => {
       $('#audioPlayIcon').show();
       $('#audioPauseIcon').hide();
@@ -27,14 +35,13 @@ function initClient(session){
 }
 
 function playPauseAudio(){
-  let audioElemSource = audioElem.get(0);
-  if(audioElemSource.paused) {
-    audioElemSource.play();
+  if(audioElem.get(0).paused) {
+    audioElem.get(0).play();
     $('#audioPlayIcon').hide();
     $('#audioPauseIcon').show();
   }
   else {
-    audioElemSource.pause();
+    audioElem.get(0).pause();
     $('#audioPlayIcon').show();
     $('#audioPauseIcon').hide();
   }
@@ -57,7 +64,9 @@ function submitAnswer(){
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
-        location.reload();
+        $('#mainContainer').hide()
+        $('#confirmationContainer').show();
+        setInterval(nextQuestionCheck, 1000)
       }
     }
     xhr.open("POST", host, true);
@@ -66,5 +75,19 @@ function submitAnswer(){
       session: sessionId,
       value: value
     }));
+  }
+}
+
+function nextQuestion(){
+  location.reload();
+}
+
+function nextQuestionCheck(){
+  nextQuestionCounter++;
+  if(nextQuestionCounter >= nextQuestionThreshold){
+    nextQuestion();
+  }
+  else {
+    $('#getNextQuestionButtonTextCountDown').text((nextQuestionThreshold - nextQuestionCounter) + ")");
   }
 }

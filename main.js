@@ -38,6 +38,8 @@ async function main(){
     app.use("/css", express.static(path.join(__dirname, "css/")));
     app.use("/content", express.static(path.join(__dirname, "content/")));
     app.use("/icons", express.static(path.join(__dirname, "icons/")));
+    app.use("/img", express.static(path.join(__dirname, "img/")));
+    app.use("/manifest", express.static(path.join(__dirname, "manifest/")));
 
     let privateKey  = fs.readFileSync(path.join(__dirname, "/private/selfsigned.key"));
     let certificate = fs.readFileSync(path.join(__dirname, "/private/selfsigned.crt"));
@@ -65,9 +67,12 @@ async function main(){
                     "question": question,
                     "time": date.getTime()
                 }
-                res.render("index", {
+                res.render("question", {
+                    qId: question["_id"].toString(),
                     question: question["question"],
                     type: question["type"],
+                    scaleLow: question["scale"][0],
+                    scaleHigh: question["scale"][1],
                     content: question["content"],
                     session: sessionId
                 });
