@@ -124,5 +124,47 @@ button:enabled:hover{
   font-size: 0.8em;
   position: fixed;
   left: 0;
+  bottom: 32px;
+}
+
+.qSessionId{
+  margin: 10px;
+  font-size: 0.8em;
+  position: fixed;
+  left: 0;
+  bottom: 16px;
+}
+
+.cSessionId{
+  margin: 10px;
+  font-size: 0.8em;
+  position: fixed;
+  left: 0;
   bottom: 0;
+}
+
+.consentText{
+  padding: 2em;
+}
+
+.consentForm input {
+  width: 40px;
+  margin: 10px 0 40px 0;
+  padding: 12px 20px;
+  border: 2px solid var(--s_light);
+  border-radius: 4px;
+  text-align: center;
+  color: #424242;
+  font-family: Lexend Deca, sans-serif;
+  font-size: 1em;
+}
+
+.endTitle{
+  font-size: 1.5em;
+  text-align: center;
+  padding: 10px
+}
+
+.endText{
+  padding: 2em;
 }

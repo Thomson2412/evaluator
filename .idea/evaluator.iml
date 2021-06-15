@@ -8,5 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="uuid" level="application" />
+    <orderEntry type="library" name="js-cookie" level="application" />
   </component>
 </module>

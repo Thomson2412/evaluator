@@ -7,18 +7,20 @@ const fs = require("fs");
 const {MongoClient} = require("mongodb");
 const httpPort = 3000;
 const httpsPort = 3443;
-const sessionCheckInterval = 3600000;
-const sessionTimeout = 3600000 * 4;
-const { v4: uuidv4 } = require('uuid');
+const qSessionCheckInterval = 3600000;
+const qSessionTimeout = 3600000 * 4;
+const uuid = require('uuid');
 
-let sessionList = {};
+let qSessionList = {};
 
 async function main(){
     const dbData = getDbData();
     const user = dbData[0];
     const db = dbData[1];
     const pass = dbData[2];
-    const uri = "mongodb://" + user + ":" + pass + "@192.168.178.8:27017/" + db + "?authSource=" + db;
+    const location = dbData[3];
+    const port = dbData[4];
+    const uri = "mongodb://" + user + ":" + pass + "@" + location + ":" + port +"/" + db + "?authSource=" + db;
     const client = new MongoClient(uri, {"useUnifiedTopology": true});
 
     app.set("view engine", "pug")
@@ -56,26 +58,11 @@ async function main(){
 
     try {
         await client.connect();
-        setInterval(checkSessionList, sessionCheckInterval);
+        setInterval(checkQSessionList, qSessionCheckInterval);
 
         app.get("/", async(req, res, next) => {
             async function runAsync () {
-                let sessionId = uuidv4();
-                let question = await getQuestion(client);
-                let date = new Date();
-                sessionList[sessionId] = {
-                    "question": question,
-                    "time": date.getTime()
-                }
-                res.render("question", {
-                    qId: question["_id"].toString(),
-                    question: question["question"],
-                    type: question["type"],
-                    scaleLow: question["scale"][0],
-                    scaleHigh: question["scale"][1],
-                    content: question["content"],
-                    session: sessionId
-                });
+                res.render("welcome", {});
             }
             runAsync()
                 .catch(next)
@@ -83,9 +70,51 @@ async function main(){
 
         app.post("/", async(req, res, next) => {
             async function runAsync () {
-                let sessionId = req.body["session"];
+                let cSessionId = req.body["cSession"];
+                let age = req.body["age"];
+                let musicalBackground = req.body["musicalBackground"];
+                await putUser(client, cSessionId, age, musicalBackground);
+                res.sendStatus(200);
+            }
+            runAsync()
+                .catch(next)
+        });
+
+        app.get("/question", async(req, res, next) => {
+            async function runAsync () {
+                let cSession = req.query["cSession"];
+                let question = await getQuestion(client, cSession);
+                if(question !== "end") {
+                    let qSessionId = uuid.v4();
+                    let date = new Date();
+                    qSessionList[qSessionId] = {
+                        "question": question,
+                        "time": date.getTime()
+                    }
+                    res.render("question", {
+                        qId: question["_id"].toString(),
+                        question: question["question"],
+                        type: question["type"],
+                        scaleLow: question["scale"][0],
+                        scaleHigh: question["scale"][1],
+                        content: question["content"],
+                        qSession: qSessionId
+                    });
+                }
+                else {
+                    res.render("end", {});
+                }
+            }
+            runAsync()
+                .catch(next)
+        });
+
+        app.post("/question", async(req, res, next) => {
+            async function runAsync () {
+                let cSessionId = req.body["cSession"];
+                let qSessionId = req.body["qSession"];
                 let answer = req.body["value"];
-                await putAnswer(client, sessionId, answer);
+                await putAnswer(client, qSessionId, cSessionId, answer);
                 res.sendStatus(200);
             }
             runAsync()
@@ -93,8 +122,8 @@ async function main(){
         });
 
         app.post("/close", (req, res) => {
-            let sessionId = req.body["session"];
-            delete sessionList[sessionId];
+            let qSessionId = req.body["qSession"];
+            delete qSessionList[qSessionId];
         });
 
         process.on("SIGINT", async () => {
@@ -108,9 +137,18 @@ async function main(){
     }
 }
 
-async function getQuestion(client) {
+async function getQuestion(client, cSession) {
     const answersCollection = client.db().collection("answers");
     const questionsCollection = client.db().collection("questions");
+    const usersCollection = client.db().collection("users");
+
+    let userAnsweredQuestionsIds = [];
+    if(uuid.validate(cSession)) {
+        let user = await usersCollection.findOne({"cSessionId": cSession});
+        if (user && user["answeredQuestionIds"]) {
+            userAnsweredQuestionsIds = user["answeredQuestionIds"];
+        }
+    }
 
     let cursor = answersCollection.find();
     let answerAmount = await cursor.count();
@@ -120,6 +158,7 @@ async function getQuestion(client) {
     }
     else {
         let answeredQuestionsIds = await answersCollection.distinct("_id");
+        answeredQuestionsIds.push(userAnsweredQuestionsIds);
         let unansweredQuestions = await questionsCollection.distinct("_id", {_id: {$nin: answeredQuestionsIds}});
         if(unansweredQuestions.length > 0){
             let randomIndex = Math.floor(Math.random() * unansweredQuestions.length);
@@ -128,36 +167,98 @@ async function getQuestion(client) {
         }
         else {
             let idCount = await answersCollection.aggregate(
-                [{$group: {_id: "$qId", count: {$sum: 1}}}]
+                [
+                    {$group: {_id: "$qId", count: {$sum: 1}}},
+                    {$match: {_id: {$nin: userAnsweredQuestionsIds}}}
+                ]
             ).toArray();
-            let lowestRandomId = getRandomMin(idCount)["_id"];
-            return await questionsCollection.findOne({_id: lowestRandomId});
+            if(idCount.length === 0){
+                return "end";
+            }
+            let lowestRandom = getRandomMin(idCount);
+            let lowestRandomId = lowestRandom["_id"];
+            const result = await questionsCollection.findOne({_id: lowestRandomId});
+            if (result){
+                return result;
+            }
+            else {
+                console.log("No question found by ID, FALLBACK!")
+                let questions =  await questionsCollection.find().toArray();
+                return questions[Math.floor(Math.random() * questions.length)];
+            }
         }
     }
 }
 
-async function putAnswer(client, sessionId, answer){
-    const answers = client.db().collection("answers");
-    let question = sessionList[sessionId]["question"];
+async function putAnswer(client, qSessionId, cSession, answer){
+    const answersCollection = client.db().collection("answers");
+    const usersCollection = client.db().collection("users");
+    let question = null;
+    if(qSessionList[qSessionId]) {
+        question = qSessionList[qSessionId]["question"];
+    }
     if(question) {
+        if(!uuid.validate(cSession)){
+            cSession = "";
+        }
         let toPutAnswer = {
             "qId": question["_id"],
             "qType": question["type"],
+            "cSessionId": cSession,
             "result": answer
         }
-        let result = await answers.insertOne(toPutAnswer);
-        delete sessionList[sessionId]
-        //console.log(result);
+        let result = await answersCollection.insertOne(toPutAnswer);
+        delete qSessionList[qSessionId]
+        console.log(result);
+        if(uuid.validate(cSession)) {
+            let user = await usersCollection.findOne({"cSessionId": cSession});
+            if(user) {
+                let userAnsweredQuestionsIds = [];
+                if (user["answeredQuestionIds"]) {
+                    userAnsweredQuestionsIds = user["answeredQuestionIds"];
+                }
+                userAnsweredQuestionsIds.push(question["_id"]);
+                let updateResult = await usersCollection.update(
+                    {cSessionId: cSession},
+                    {
+                        $set: {
+                            answeredQuestionIds: userAnsweredQuestionsIds
+                        }
+                    }
+                );
+                console.log(updateResult);
+            }
+        }
     }
     else {
-        console.log("Session not available!")
+        console.log("qSession not available!")
     }
+}
+
+async function putUser(client, cSessionId, age, mb){
+    if(!uuid.validate(cSessionId)) {
+        return;
+    }
+    if(isNaN(age) || isNaN(mb)) {
+        age = null;
+        mb = null;
+    }
+
+    const answers = client.db().collection("users");
+    let toPutUser = {
+        "cSessionId": cSessionId,
+        "age": age,
+        "musicalBackground": mb
+    }
+    let result = await answers.insertOne(toPutUser);
+    console.log(result);
 }
 
 function getRandomMin(countObject){
     let min = Math.min(...countObject.map(item => item.count));
-    let randomIndex = Math.floor(Math.random() * countObject.length);
-    return  countObject.filter(item => item.count === min)[randomIndex];
+    let minItems = countObject.filter(item => item.count === min)
+    let randomIndex = Math.floor(Math.random() * minItems.length);
+    return minItems[randomIndex];
 }
 
 function getDbData(){
@@ -170,22 +271,22 @@ function getDbData(){
     return result
 }
 
-function checkSessionList(){
-    let toRemoveSessions = [];
-    for (let key in sessionList) {
-        let sessionValues = sessionList[key];
-        let creationTime = sessionValues["time"];
-        let date = new Date();
-        let existenceTime = date.getTime() - creationTime;
+function checkQSessionList(){
+    let toRemoveQSessions = [];
+    for (const key in qSessionList) {
+        const qSessionValues = qSessionList[key];
+        const creationTime = qSessionValues["time"];
+        const date = new Date();
+        const existenceTime = date.getTime() - creationTime;
         console.log("Existence time: " + existenceTime);
-        if(existenceTime > sessionTimeout){
+        if(existenceTime > qSessionTimeout){
             console.log("Add session to remove: " + key);
-            toRemoveSessions.push(key);
+            toRemoveQSessions.push(key);
         }
     }
-    for(let sessionId of toRemoveSessions){
-        console.log("Delete session: " + sessionId);
-        delete sessionList[sessionId]
+    for(const qSessionId of toRemoveQSessions){
+        console.log("Delete session: " + qSessionId);
+        delete qSessionList[qSessionId]
     }
 }
 

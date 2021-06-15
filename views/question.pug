@@ -3,6 +3,7 @@ head
     title Evaluator
     link(rel='stylesheet' type='text/css' href='/css/css.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lexend Deca')
+    //favicon from https://iconos8.es/icon/RyzGypFMo2ly/van-gogh
     link(rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png")
     link(rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png")
     link(rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png")
@@ -11,9 +12,10 @@ head
     meta(name="msapplication-TileColor" content="#da532c")
     meta(name="theme-color" content="#ffffff")
 script(src='/js/jquery-3.6.0.min.js')
+script(src="js/js.cookie.min.js")
 script(src='/controllers/question.js')
 script.
-    $(document).ready(() => {initClient('#{session}');});
+    $(document).ready(() => {initClient('#{qSession}');});
 #evaluatorTitle.evaluatorTitle Evaluator
 #mainContainer.mainContainer
     #contentContainer.contentContainer
@@ -59,6 +61,8 @@ script.
                 | #{scaleHigh}
         button#submitAnswerButton(onclick='submitAnswer()') Submit answer
 .questionId Questions: #{qId}
+#qSessionId.qSessionId
+#cSessionId.cSessionId
 #confirmationContainer.confirmationContainer
     .thankYouTitle Thank You!
     img(src="img/draw-soft-and-cute-cartoon-animals.jpg").paintingContent

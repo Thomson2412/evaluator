@@ -3,59 +3,56 @@ head
     title Evaluator
     link(rel='stylesheet' type='text/css' href='/css/css.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lexend Deca')
+    //favicon from https://iconos8.es/icon/RyzGypFMo2ly/van-gogh
+    link(rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png")
+    link(rel="manifest" href="manifest/site.webmanifest")
+    link(rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5")
+    meta(name="msapplication-TileColor" content="#da532c")
+    meta(name="theme-color" content="#ffffff")
 script(src='/js/jquery-3.6.0.min.js')
-script(src='/controllers/question.js')
+script(src="js/js.cookie.min.js")
+script(src="/js/uuidv4.min.js")
+script(src='/controllers/welcome.js')
 script.
-    $(document).ready(() => {initClient('#{session}');});
+    $(document).ready(() => {initClient();});
 #evaluatorTitle.evaluatorTitle Evaluator
-    .questionId Questions: #{qId}
 #mainContainer.mainContainer
     #contentContainer.contentContainer
-        if type === 0
-            #paintingContent
-                img(src="content/" + content).paintingContent
-        if type === 1
-            button#playPauseButton(onclick='playPauseAudio()')
-                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
-                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
-            // - let content = "allegorical_painting-Arthur_Streeton-Spirit_of_the_drought-1895-65154.aiff"
-            #progressBar.progressBar
-            audio#audioSource(src="content/" + content)
-                p Your browser doesn't support HTML5 audio.
-                    br
-                    a(href="content/" + content) Here is a link to the audio instead.
-        if type === 2
-            #videoContent.videoContent
-                img(src="icons/outline_play_circle_filled_black_24dp.png")
-    #questionContainer.questionContainer
-        .question #{question}
+        .consentText
+            | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget commodo sapien, non vulputate magna. Etiam vel luctus neque. Sed lacinia a nisl eu ultrices. Integer congue dapibus volutpat. Proin ultrices interdum consequat. Nam erat est, gravida at tempus porttitor, cursus condimentum enim. Morbi massa diam, vehicula sed ante vel, varius sagittis ligula. Donec vel mi vitae sem facilisis efficitur in in augue.
+            | Nam eget volutpat ex, sed eleifend tortor. Donec posuere libero non tempus pharetra. Nullam in elit eu sapien molestie dapibus sit amet in massa. Cras sed ligula eget arcu laoreet volutpat in et dolor. Donec egestas lacus lacus, nec faucibus erat sodales ac. Nam leo nibh, ullamcorper id felis a, fermentum pretium enim. Vivamus finibus laoreet enim quis rutrum. Sed maximus laoreet magna, non maximus magna ultrices sed. Sed gravida tellus vel commodo dignissim.
+            | Phasellus venenatis mauris velit, non venenatis nunc suscipit id. Cras sed ligula nec ipsum consectetur volutpat. Nulla quis augue massa. Vivamus pellentesque felis quis justo egestas sollicitudin. Mauris vel tortor quis lorem dapibus aliquam at eget orci. Donec tristique, neque a commodo luctus, sem neque rutrum mauris, a sollicitudin diam nulla non nisi. Sed varius consectetur odio, vitae sodales ante.
+            | Ut feugiat risus nec ultrices ultricies. Vestibulum venenatis augue nec iaculis sodales. Praesent commodo vestibulum dolor at tempor. Suspendisse vitae aliquet ipsum. Suspendisse vel nunc tristique, ultrices lorem in, mollis purus. Pellentesque convallis ante felis. Curabitur tempus sem sed eros tincidunt, laoreet iaculis quam pellentesque.
+            | Nunc et turpis eros. Phasellus lacus enim, tempus ut placerat at, faucibus sit amet nulla. Ut metus ante, iaculis ac justo a, mollis pulvinar ex. Aenean a pulvinar enim. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc sed libero nunc. Morbi mollis quis nisl at mattis. Curabitur bibendum nibh at enim ullamcorper, a dignissim tortor placerat. Nam in est id ex condimentum vulputate sit amet ullamcorper turpis. Proin erat ligula, tempus vel cursus eu, ullamcorper sodales magna.
+        br
+        form#consentForm.consentForm(action='')
+            label Age:
+            br
+            input(type='text' name='consentForm' value='' onkeydown="return event.key != 'Enter';")#consentFormInput
+        .question Musical expertise:
         form#answerForm.answerForm(action='')
             label
-                input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
-                | #{scaleLow}
+                input(type='radio' name='answerForm' value='1' onclick='checkForms()')
+                | Low
             label
-                input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
+                input(type='radio' name='answerForm' value='2' onclick='checkForms()')
                 | 2
             label
-                input(type='radio' name='answerForm' value='3' onclick='onFormClick()')
+                input(type='radio' name='answerForm' value='3' onclick='checkForms()')
                 | 3
             label
-                input(type='radio' name='answerForm' value='4' onclick='onFormClick()')
+                input(type='radio' name='answerForm' value='4' onclick='checkForms()')
                 | 4
             label
-                input(type='radio' name='answerForm' value='5' onclick='onFormClick()')
+                input(type='radio' name='answerForm' value='5' onclick='checkForms()')
                 | 5
             label
-                input(type='radio' name='answerForm' value='6' onclick='onFormClick()')
+                input(type='radio' name='answerForm' value='6' onclick='checkForms()')
                 | 6
             label
-                input(type='radio' name='answerForm' value='7' onclick='onFormClick()')
-                | #{scaleHigh}
-        button#submitAnswerButton(onclick='submitAnswer()') Submit answer
-#confirmationContainer.confirmationContainer
-    .thankYouTitle Thank You!
-    img(src="img/draw-soft-and-cute-cartoon-animals.jpg").paintingContent
-    .thankYouMsg Your submission is ver much appreciated :)
-    button#getNextQuestionButton(onclick='nextQuestion()')
-        span#getNextQuestionButtonText Give me another one! (
-        span#getNextQuestionButtonTextCountDown 5)
+                input(type='radio' name='answerForm' value='7' onclick='checkForms()')
+                | High
+
+        button#submitConsentButton(onclick='submitConsent()') Let's start :)

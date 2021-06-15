@@ -1,11 +1,12 @@
-let sessionId;
+let cSessionId;
+let qSessionId;
 let submitted = false;
 let audioElem;
 let nextQuestionCounter = 0;
 let nextQuestionThreshold = 5;
 
-function initClient(session){
-  sessionId = session;
+function initClient(qSession){
+  qSessionId = qSession;
   $('#submitAnswerButton').prop('disabled', true);
   $('#audioPauseIcon').hide();
   $(window).on("beforeunload", () => {
@@ -15,7 +16,7 @@ function initClient(session){
       xhr.open("POST", host, true);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.send(JSON.stringify({
-        session: sessionId,
+        qSession: qSessionId,
       }));
     }
   });
@@ -32,6 +33,20 @@ function initClient(session){
       $('#audioPauseIcon').hide();
     });
   }
+  const cSessionIdCookie = Cookies.get("cSessionId")
+  const cSessionIdUrl = new URLSearchParams(window.location.search).get('cSession');
+  if(cSessionIdCookie && checkUuid(cSessionIdCookie)){
+    cSessionId = cSessionIdCookie;
+    $("#cSessionId").text("cSession: " + cSessionId);
+  }
+  else if(cSessionIdUrl && checkUuid(cSessionIdUrl)){
+    cSessionId = cSessionIdCookie;
+    $("#cSessionId").text("cSession: " + cSessionId);
+  }
+  else {
+    $("#cSessionId").text("cSession: sessionLess");
+  }
+  $("#qSessionId").text("qSession: " + qSessionId);
 }
 
 function playPauseAudio(){
@@ -69,17 +84,23 @@ function submitAnswer(){
         setInterval(nextQuestionCheck, 1000)
       }
     }
-    xhr.open("POST", host, true);
+    xhr.open("POST", "/question", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
-      session: sessionId,
+      qSession: qSessionId,
+      cSession: cSessionId,
       value: value
     }));
   }
 }
 
 function nextQuestion(){
-  location.reload();
+  if(checkUuid(cSessionId)) {
+    location.replace("/question?cSession=" + cSessionId);
+  }
+  else {
+    location.replace("/question");
+  }
 }
 
 function nextQuestionCheck(){
@@ -90,4 +111,8 @@ function nextQuestionCheck(){
   else {
     $('#getNextQuestionButtonTextCountDown').text((nextQuestionThreshold - nextQuestionCounter) + ")");
   }
+}
+
+function checkUuid(value){
+  return /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(value);
 }
