@@ -51,7 +51,17 @@ function generateSession(){
 function checkSession(){
     const cSessionId = Cookies.get('cSessionId');
     if (cSessionId) {
-        location.replace("/question?cSession=" + cSessionId);
+        let xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+            if(xhr.status === 200){
+                location.replace("/question?cSession=" + cSessionId);
+            }
+        };
+        xhr.open("POST", "/checkSession", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            cSession: cSessionId
+        }));
     }
 }
 
@@ -61,14 +71,13 @@ function submitConsent(){
         const mbValue = $('input[name="answerForm"]:checked').val();
         $('#submitConsentButton').prop('disabled', true);
         const cSessionId = generateSession();
-        let host = window.location.protocol + "//" + window.location.host;
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 location.replace("/question?cSession=" + cSessionId);
             }
         }
-        xhr.open("POST", host, true);
+        xhr.open("POST", "/", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
             cSession: cSessionId,

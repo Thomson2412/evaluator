@@ -2,6 +2,8 @@ let cSessionId;
 let qSessionId;
 let submitted = false;
 let audioElem;
+let video0Elem;
+let video1Elem;
 let nextQuestionCounter = 0;
 let nextQuestionThreshold = 5;
 
@@ -33,6 +35,21 @@ function initClient(qSession){
       $('#audioPauseIcon').hide();
     });
   }
+  video0Elem = $('#videoSource0');
+  video1Elem = $('#videoSource1');
+  if(video0Elem && video1Elem){
+    video0Elem.on('timeupdate', () => {
+      let currentTime = video0Elem.get(0).currentTime;
+      let duration = video0Elem.get(0).duration;
+      let progressPercentage = (currentTime / duration) * 100;
+      $('#progressBar').width(progressPercentage + '%')
+    });
+    video0Elem.on("ended", () => {
+      $('#audioPlayIcon').show();
+      $('#audioPauseIcon').hide();
+    });
+  }
+
   const cSessionIdCookie = Cookies.get("cSessionId")
   const cSessionIdUrl = new URLSearchParams(window.location.search).get('cSession');
   if(cSessionIdCookie && checkUuid(cSessionIdCookie)){
@@ -57,6 +74,21 @@ function playPauseAudio(){
   }
   else {
     audioElem.get(0).pause();
+    $('#audioPlayIcon').show();
+    $('#audioPauseIcon').hide();
+  }
+}
+
+function playPauseVideo(){
+  if(video0Elem.get(0).paused || video1Elem.get(0).paused) {
+    video0Elem.get(0).play();
+    video1Elem.get(0).play();
+    $('#audioPlayIcon').hide();
+    $('#audioPauseIcon').show();
+  }
+  else {
+    video0Elem.get(0).pause();
+    video1Elem.get(0).pause();
     $('#audioPlayIcon').show();
     $('#audioPauseIcon').hide();
   }

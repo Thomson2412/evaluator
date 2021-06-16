@@ -65,7 +65,7 @@ async function main(){
                 res.render("welcome", {});
             }
             runAsync()
-                .catch(next)
+                .catch(next);
         });
 
         app.post("/", async(req, res, next) => {
@@ -77,7 +77,7 @@ async function main(){
                 res.sendStatus(200);
             }
             runAsync()
-                .catch(next)
+                .catch(next);
         });
 
         app.get("/question", async(req, res, next) => {
@@ -89,9 +89,10 @@ async function main(){
                     let date = new Date();
                     qSessionList[qSessionId] = {
                         "question": question,
-                        "time": date.getTime()
+                        "time": date.getTime(),
+                        "shifted": false
                     }
-                    res.render("question", {
+                    let options = {
                         qId: question["_id"].toString(),
                         question: question["question"],
                         type: question["type"],
@@ -99,14 +100,27 @@ async function main(){
                         scaleHigh: question["scale"][1],
                         content: question["content"],
                         qSession: qSessionId
-                    });
+                    }
+                    if (question["type"] === 2){
+                        let mutedArr = [false, true]
+                        let contentArr = [...question["content"]];
+                        const randomInt = Math.round(Math.random());
+                        if (randomInt === 1) {
+                            contentArr.push(contentArr.shift());
+                            mutedArr.push(mutedArr.shift());
+                            qSessionList[qSessionId]["shifted"] = true;
+                        }
+                        options["content"] = contentArr;
+                        options["isMuted"] = mutedArr;
+                    }
+                    res.render("question", options);
                 }
                 else {
                     res.render("end", {});
                 }
             }
             runAsync()
-                .catch(next)
+                .catch(next);
         });
 
         app.post("/question", async(req, res, next) => {
@@ -118,7 +132,22 @@ async function main(){
                 res.sendStatus(200);
             }
             runAsync()
-                .catch(next)
+                .catch(next);
+        });
+
+        app.post("/checkSession", async(req, res, next) => {
+            async function runAsync () {
+                let cSessionId = req.body["cSession"];
+                let user = await client.db().collection("users").findOne({"cSessionId": cSessionId});
+                if(user){
+                    res.sendStatus(200);
+                }
+                else {
+                    res.sendStatus(204);
+                }
+            }
+            runAsync()
+                .catch(next);
         });
 
         app.post("/close", (req, res) => {
@@ -200,6 +229,14 @@ async function putAnswer(client, qSessionId, cSession, answer){
     if(question) {
         if(!uuid.validate(cSession)){
             cSession = "";
+        }
+        if(question["type"] === 2 && qSessionList[qSessionId]["shifted"]){
+            if(answer === "1"){
+                answer = "2";
+            }
+            else if(answer === "2"){
+                answer = "1";
+            }
         }
         let toPutAnswer = {
             "qId": question["_id"],

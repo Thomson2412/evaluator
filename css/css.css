@@ -65,8 +65,18 @@ button:enabled:hover{
 
 .videoContent{
   max-width:100%;
-  max-height: 60vh;
   height:auto;
+}
+
+.videoSource{
+  max-width: 38vh;
+  max-height: 40vh;
+  height:auto;
+  margin: 0 40px;
+}
+
+.videoLabel{
+  display: inline-block;
 }
 
 .questionContainer{

@@ -34,31 +34,51 @@ script.
                     a(href="content/" + content) Here is a link to the audio instead.
         if type === 2
             #videoContent.videoContent
-                img(src="icons/outline_play_circle_filled_black_24dp.png")
+                .videoLabel
+                    video#videoSource0.videoSource(src="content/" + content[0], muted=isMuted[0])
+                    br
+                    | First
+                .videoLabel
+                    video#videoSource1.videoSource(src="content/" + content[1] muted=isMuted[1])
+                    br
+                    | Second
+            button#playPauseButton(onclick='playPauseVideo()')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
+            #progressBar.progressBar
     #questionContainer.questionContainer
         .question #{question}
-        form#answerForm.answerForm(action='')
-            label
-                input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
-                | #{scaleLow}
-            label
-                input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
-                | 2
-            label
-                input(type='radio' name='answerForm' value='3' onclick='onFormClick()')
-                | 3
-            label
-                input(type='radio' name='answerForm' value='4' onclick='onFormClick()')
-                | 4
-            label
-                input(type='radio' name='answerForm' value='5' onclick='onFormClick()')
-                | 5
-            label
-                input(type='radio' name='answerForm' value='6' onclick='onFormClick()')
-                | 6
-            label
-                input(type='radio' name='answerForm' value='7' onclick='onFormClick()')
-                | #{scaleHigh}
+        if type === 0 || type === 1
+            form#answerForm.answerForm(action='')
+                label
+                    input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
+                    | #{scaleLow}
+                label
+                    input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
+                    | 2
+                label
+                    input(type='radio' name='answerForm' value='3' onclick='onFormClick()')
+                    | 3
+                label
+                    input(type='radio' name='answerForm' value='4' onclick='onFormClick()')
+                    | 4
+                label
+                    input(type='radio' name='answerForm' value='5' onclick='onFormClick()')
+                    | 5
+                label
+                    input(type='radio' name='answerForm' value='6' onclick='onFormClick()')
+                    | 6
+                label
+                    input(type='radio' name='answerForm' value='7' onclick='onFormClick()')
+                    | #{scaleHigh}
+        if type === 2
+            form#answerForm.answerForm(action='')
+                label
+                    input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
+                    | #{scaleLow}
+                label
+                    input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
+                    | #{scaleHigh}
         button#submitAnswerButton(onclick='submitAnswer()') Submit answer
 .questionId Questions: #{qId}
 #qSessionId.qSessionId
