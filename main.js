@@ -5,8 +5,6 @@ const https = require("https");
 const path = require("path");
 const fs = require("fs");
 const {MongoClient} = require("mongodb");
-const httpPort = 3000;
-const httpsPort = 3443;
 const qSessionCheckInterval = 3600000;
 const qSessionTimeout = 3600000 * 4;
 const uuid = require('uuid');
@@ -14,12 +12,14 @@ const uuid = require('uuid');
 let qSessionList = {};
 
 async function main(){
-    const dbData = getDbData();
-    const user = dbData[0];
-    const db = dbData[1];
-    const pass = dbData[2];
-    const location = dbData[3];
-    const port = dbData[4];
+    const config = getConfig();
+    const user = config[0];
+    const db = config[1];
+    const pass = config[2];
+    const location = config[3];
+    const port = config[4];
+    const httpPort = config[5];
+    const httpsPort = config[6];
     const uri = "mongodb://" + user + ":" + pass + "@" + location + ":" + port +"/" + db + "?authSource=" + db;
     const client = new MongoClient(uri, {"useUnifiedTopology": true});
 
@@ -308,8 +308,8 @@ function getRandomMin(countObject){
     return minItems[randomIndex];
 }
 
-function getDbData(){
-    const dbConnectionData = fs.readFileSync(path.join(__dirname, "/private/dbData.txt"), "UTF-8")
+function getConfig(){
+    const dbConnectionData = fs.readFileSync(path.join(__dirname, "/private/config.txt"), "UTF-8")
     const lines = dbConnectionData.split(/\r?\n/);
     let result = [];
     lines.forEach((line) => {
