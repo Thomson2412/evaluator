@@ -237,6 +237,9 @@ async function putAnswer(client, qSessionId, cSession, answer){
         if(!uuid.validate(cSession)){
             cSession = null;
         }
+        if (!checkIfStringIsNumber(answer)){
+            answer = null;
+        }
         if(question["type"] === 2 && qSessionList[qSessionId]["shifted"]){
             if(answer === "1"){
                 answer = "2";
@@ -283,7 +286,7 @@ async function putUser(client, cSessionId, age, mb){
     if(!uuid.validate(cSessionId)) {
         return;
     }
-    if(isNaN(age) || isNaN(mb)) {
+    if(checkIfStringIsNumber(age) || checkIfStringIsNumber(mb)) {
         age = null;
         mb = null;
     }
@@ -332,6 +335,10 @@ function checkQSessionList(){
         console.log("Delete session: " + qSessionId);
         delete qSessionList[qSessionId]
     }
+}
+
+function checkIfStringIsNumber(input){
+    return /^[0-9]+$/.test(input);
 }
 
 main().catch(console.error);
