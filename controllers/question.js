@@ -106,8 +106,13 @@ function submitAnswer(){
   if(value && value !== "") {
     $('#submitAnswerButton').prop('disabled', true);
     submitted = true;
-
-    let host = window.location.protocol + "//" + window.location.host;
+    if(audioElem) {
+      audioElem.get(0).pause();
+    }
+    if(video0Elem && video1Elem){
+      video0Elem.get(0).pause();
+      video1Elem.get(0).pause();
+    }
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {

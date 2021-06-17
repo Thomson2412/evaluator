@@ -30,7 +30,7 @@ async function main(){
             next();
         }
         else {
-            res.redirect("https://" + req.hostname + ":3443");
+            res.redirect("https://" + req.hostname + ":" + httpsPort);
         }
     });
 
@@ -138,9 +138,14 @@ async function main(){
         app.post("/checkSession", async(req, res, next) => {
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
-                let user = await client.db().collection("users").findOne({"cSessionId": cSessionId});
-                if(user){
-                    res.sendStatus(200);
+                if(uuid.validate(cSessionId)) {
+                    let user = await client.db().collection("users").findOne({"cSessionId": cSessionId});
+                    if (user) {
+                        res.sendStatus(200);
+                    }
+                    else {
+                        res.sendStatus(204);
+                    }
                 }
                 else {
                     res.sendStatus(204);
@@ -152,7 +157,9 @@ async function main(){
 
         app.post("/close", (req, res) => {
             let qSessionId = req.body["qSession"];
-            delete qSessionList[qSessionId];
+            if(uuid.validate(qSessionId) && qSessionList[qSessionId]) {
+                delete qSessionList[qSessionId];
+            }
         });
 
         process.on("SIGINT", async () => {
@@ -223,12 +230,12 @@ async function putAnswer(client, qSessionId, cSession, answer){
     const answersCollection = client.db().collection("answers");
     const usersCollection = client.db().collection("users");
     let question = null;
-    if(qSessionList[qSessionId]) {
+    if(uuid.validate(qSessionId) && qSessionList[qSessionId]) {
         question = qSessionList[qSessionId]["question"];
     }
     if(question) {
         if(!uuid.validate(cSession)){
-            cSession = "";
+            cSession = null;
         }
         if(question["type"] === 2 && qSessionList[qSessionId]["shifted"]){
             if(answer === "1"){
@@ -247,7 +254,7 @@ async function putAnswer(client, qSessionId, cSession, answer){
         let result = await answersCollection.insertOne(toPutAnswer);
         delete qSessionList[qSessionId]
         console.log(result);
-        if(uuid.validate(cSession)) {
+        if(cSession !== null && uuid.validate(cSession)) {
             let user = await usersCollection.findOne({"cSessionId": cSession});
             if(user) {
                 let userAnsweredQuestionsIds = [];
