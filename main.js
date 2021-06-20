@@ -43,9 +43,15 @@ async function main(){
     app.use("/img", express.static(path.join(__dirname, "img/")));
     app.use("/manifest", express.static(path.join(__dirname, "manifest/")));
 
-    let privateKey  = fs.readFileSync(path.join(__dirname, "/private/selfsigned.key"));
-    let certificate = fs.readFileSync(path.join(__dirname, "/private/selfsigned.crt"));
-    let credentials = {key: privateKey, cert: certificate};
+    const privateKey = fs.readFileSync('/etc/letsencrypt/live/soloheisbeer.com/privkey.pem', 'utf8');
+    const certificate = fs.readFileSync('/etc/letsencrypt/live/soloheisbeer.com/cert.pem', 'utf8');
+    const ca = fs.readFileSync('/etc/letsencrypt/live/soloheisbeer.com/chain.pem', 'utf8');
+
+    const credentials = {
+        key: privateKey,
+        cert: certificate,
+        ca: ca
+    };
 
     let httpServer = http.createServer(app);
     let httpsServer = https.createServer(credentials, app);
