@@ -26,7 +26,6 @@ script.
             button#playPauseButton(onclick='playPauseAudio()')
                 img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
                 img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
-            // - let content = "allegorical_painting-Arthur_Streeton-Spirit_of_the_drought-1895-65154.aiff"
             #progressBar.progressBar
             audio#audioSource(src="content/" + content)
                 p Your browser doesn't support HTML5 audio.
@@ -36,10 +35,12 @@ script.
             #videoContent.videoContent
                 .videoLabel
                     video#videoSource0.videoSource(src="content/" + content[0], muted=isMuted[0])
+                        p Your browser doesn't support HTML5 video.
                     br
                     | First
                 .videoLabel
                     video#videoSource1.videoSource(src="content/" + content[1] muted=isMuted[1])
+                        p Your browser doesn't support HTML5 video.
                     br
                     | Second
             button#playPauseButton(onclick='playPauseVideo()')
