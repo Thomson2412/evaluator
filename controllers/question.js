@@ -63,6 +63,7 @@ function initClient(qSession){
   else {
     $("#cSessionId").text("cSession: sessionLess");
   }
+  hideURLParams(["cSession"]);
   $("#qSessionId").text("qSession: " + qSessionId);
 }
 
@@ -152,4 +153,17 @@ function nextQuestionCheck(){
 
 function checkUuid(value){
   return /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(value);
+}
+
+function hideURLParams(hide) {
+  //Parameters to hide (ie ?success=value, ?error=value, etc)
+  for(const h in hide) {
+    if(getURLParameter(h)) {
+      history.replaceState(null, document.getElementsByTagName("title")[0].innerHTML, window.location.pathname);
+    }
+  }
+}
+
+function getURLParameter(name) {
+  return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[undefined,null])[1]);
 }
