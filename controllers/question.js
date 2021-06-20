@@ -23,7 +23,7 @@ function initClient(qSession){
     }
   });
   audioElem = $('#audioSource');
-  if(audioElem){
+  if(audioElem.length){
     audioElem.on('timeupdate', () => {
       let currentTime = audioElem.get(0).currentTime;
       let duration = audioElem.get(0).duration;
@@ -37,7 +37,7 @@ function initClient(qSession){
   }
   video0Elem = $('#videoSource0');
   video1Elem = $('#videoSource1');
-  if(video0Elem && video1Elem){
+  if(video0Elem.length && video1Elem.length){
     video0Elem.on('timeupdate', () => {
       let currentTime = video0Elem.get(0).currentTime;
       let duration = video0Elem.get(0).duration;
@@ -106,10 +106,10 @@ function submitAnswer(){
   if(value && value !== "") {
     $('#submitAnswerButton').prop('disabled', true);
     submitted = true;
-    if(audioElem) {
+    if(audioElem.length) {
       audioElem.get(0).pause();
     }
-    if(video0Elem && video1Elem){
+    if(video0Elem.length && video1Elem.length){
       video0Elem.get(0).pause();
       video1Elem.get(0).pause();
     }
