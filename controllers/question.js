@@ -23,7 +23,7 @@ function initClient(qSession){
     }
   });
   audioElem = $('#audioSource');
-  if(audioElem){
+  if(audioElem.length){
     audioElem.on('timeupdate', () => {
       let currentTime = audioElem.get(0).currentTime;
       let duration = audioElem.get(0).duration;
@@ -37,7 +37,7 @@ function initClient(qSession){
   }
   video0Elem = $('#videoSource0');
   video1Elem = $('#videoSource1');
-  if(video0Elem && video1Elem){
+  if(video0Elem.length && video1Elem.length){
     video0Elem.on('timeupdate', () => {
       let currentTime = video0Elem.get(0).currentTime;
       let duration = video0Elem.get(0).duration;
@@ -63,6 +63,7 @@ function initClient(qSession){
   else {
     $("#cSessionId").text("cSession: sessionLess");
   }
+  hideURLParams(["cSession"]);
   $("#qSessionId").text("qSession: " + qSessionId);
 }
 
@@ -106,10 +107,10 @@ function submitAnswer(){
   if(value && value !== "") {
     $('#submitAnswerButton').prop('disabled', true);
     submitted = true;
-    if(audioElem) {
+    if(audioElem.length) {
       audioElem.get(0).pause();
     }
-    if(video0Elem && video1Elem){
+    if(video0Elem.length && video1Elem.length){
       video0Elem.get(0).pause();
       video1Elem.get(0).pause();
     }
@@ -152,4 +153,17 @@ function nextQuestionCheck(){
 
 function checkUuid(value){
   return /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(value);
+}
+
+function hideURLParams(hide) {
+  //Parameters to hide (ie ?success=value, ?error=value, etc)
+  for(const h in hide) {
+    if(getURLParameter(h)) {
+      history.replaceState(null, document.getElementsByTagName("title")[0].innerHTML, window.location.pathname);
+    }
+  }
+}
+
+function getURLParameter(name) {
+  return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[undefined,null])[1]);
 }
