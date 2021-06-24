@@ -90,7 +90,7 @@ async function main(){
             async function runAsync () {
                 let cSession = req.query["cSession"];
                 let question = await getQuestion(client, cSession);
-                if(question !== "end") {
+                if(question !== null && question !== undefined && question !== "end") {
                     let qSessionId = uuid.v4();
                     let date = new Date();
                     qSessionList[qSessionId] = {
@@ -121,8 +121,11 @@ async function main(){
                     }
                     res.render("question", options);
                 }
-                else {
+                else if(question === "end") {
                     res.render("end", {});
+                }
+                else {
+                    res.render("oops", {});
                 }
             }
             runAsync()
