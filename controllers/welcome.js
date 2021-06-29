@@ -29,10 +29,9 @@ function isAgeValid(value){
 }
 
 function checkForms(){
-    const ageValue = $("#consentFormInput").val();
-    const ageValid = isAgeValid(ageValue);
-    const mbValue = $('input[name="answerForm"]:checked').val();
-    if(ageValue.length > 0 && ageValid && mbValue && mbValue !== ""){
+    const mbValue = $('input[name="musicalForm"]:checked').val();
+    const vabValue = $('input[name="artForm"]:checked').val();
+    if(mbValue && mbValue !== "" && vabValue && vabValue !== ""){
         $('#submitConsentButton').prop('disabled', false);
         return true;
     }
@@ -67,8 +66,9 @@ function checkSession(){
 
 function submitConsent(){
     if (checkForms()) {
-        const ageValue = $("#consentFormInput").val();
-        const mbValue = $('input[name="answerForm"]:checked').val();
+        const mbValue = $('input[name="musicalForm"]:checked').val();
+        const vabValue = $('input[name="artForm"]:checked').val();
+        const aInfo = $('textarea[name="optionalForm"]').val();
         $('#submitConsentButton').prop('disabled', true);
         const cSessionId = generateSession();
         let xhr = new XMLHttpRequest();
@@ -81,8 +81,9 @@ function submitConsent(){
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
             cSession: cSessionId,
-            age: ageValue,
-            musicalBackground: mbValue
+            musicalBackground: mbValue,
+            visualArtBackground: vabValue,
+            additionalInformation: aInfo
         }));
     }
 }

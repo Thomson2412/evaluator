@@ -28,33 +28,58 @@ script.
             | By starting you also agree to the use of your age and musical background within the experiment evaluation.
             | Participation in this study is voluntary. You can end your participation in the study at any time, without any explanation and without any negative consequences. If you end your participation, we will use the data collected up to that point, unless you explicitly inform us otherwise.
         br
-        form#consentForm.consentForm(action='')
-            label Age:
-            br
-            input(type='text' name='consentForm' value='' onkeydown="return event.key != 'Enter';")#consentFormInput
         .question Musical expertise:
-        form#answerForm.answerForm(action='')
+        form#musicalForm.radioForm(action='')
             label
-                input(type='radio' name='answerForm' value='1' onclick='checkForms()')
+                input(type='radio' name='musicalForm' value='1' onclick='checkForms()')
                 | Low
             label
-                input(type='radio' name='answerForm' value='2' onclick='checkForms()')
+                input(type='radio' name='musicalForm' value='2' onclick='checkForms()')
                 | 2
             label
-                input(type='radio' name='answerForm' value='3' onclick='checkForms()')
+                input(type='radio' name='musicalForm' value='3' onclick='checkForms()')
                 | 3
             label
-                input(type='radio' name='answerForm' value='4' onclick='checkForms()')
+                input(type='radio' name='musicalForm' value='4' onclick='checkForms()')
                 | 4
             label
-                input(type='radio' name='answerForm' value='5' onclick='checkForms()')
+                input(type='radio' name='musicalForm' value='5' onclick='checkForms()')
                 | 5
             label
-                input(type='radio' name='answerForm' value='6' onclick='checkForms()')
+                input(type='radio' name='musicalForm' value='6' onclick='checkForms()')
                 | 6
             label
-                input(type='radio' name='answerForm' value='7' onclick='checkForms()')
+                input(type='radio' name='musicalForm' value='7' onclick='checkForms()')
                 | High
+
+        .question Visual arts experience:
+        form#artForm.radioForm(action='')
+            label
+                input(type='radio' name='artForm' value='1' onclick='checkForms()')
+                | Low
+            label
+                input(type='radio' name='artForm' value='2' onclick='checkForms()')
+                | 2
+            label
+                input(type='radio' name='artForm' value='3' onclick='checkForms()')
+                | 3
+            label
+                input(type='radio' name='artForm' value='4' onclick='checkForms()')
+                | 4
+            label
+                input(type='radio' name='artForm' value='5' onclick='checkForms()')
+                | 5
+            label
+                input(type='radio' name='artForm' value='6' onclick='checkForms()')
+                | 6
+            label
+                input(type='radio' name='artForm' value='7' onclick='checkForms()')
+                | High
+        br
+        form#optionalForm.optionalForm(action='')
+            label Elaboration on musical expertise or visual arts experience:
+            br
+            textarea(name='optionalForm' autocomplete='off' placeholder='(Optional)')#optionalFormInput
 
         button#submitConsentButton(onclick='submitConsent()') Let's start :)
 

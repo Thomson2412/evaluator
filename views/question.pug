@@ -50,7 +50,7 @@ script.
     #questionContainer.questionContainer
         .question #{question}
         if type === 0 || type === 1
-            form#answerForm.answerForm(action='')
+            form#radioForm.radioForm(action='')
                 label
                     input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
                     | #{scaleLow}
@@ -73,7 +73,7 @@ script.
                     input(type='radio' name='answerForm' value='7' onclick='onFormClick()')
                     | #{scaleHigh}
         if type === 2
-            form#answerForm.answerForm(action='')
+            form#radioForm.radioForm(action='')
                 label
                     input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
                     | #{scaleLow}

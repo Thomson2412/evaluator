@@ -20,6 +20,7 @@ async function main(){
     const port = config[4];
     const httpPort = config[5];
     const httpsPort = config[6];
+    const certificateLocation = config[7];
     const uri = "mongodb://" + user + ":" + pass + "@" + location + ":" + port +"/" + db + "?authSource=" + db;
     const client = new MongoClient(uri, {"useUnifiedTopology": true});
 
@@ -43,9 +44,9 @@ async function main(){
     app.use("/img", express.static(path.join(__dirname, "img/")));
     app.use("/manifest", express.static(path.join(__dirname, "manifest/")));
 
-    const privateKey = fs.readFileSync('/etc/letsencrypt/live/soloheisbeer.com/privkey.pem', 'utf8');
-    const certificate = fs.readFileSync('/etc/letsencrypt/live/soloheisbeer.com/cert.pem', 'utf8');
-    const ca = fs.readFileSync('/etc/letsencrypt/live/soloheisbeer.com/chain.pem', 'utf8');
+    const privateKey = fs.readFileSync(path.join(certificateLocation, 'privkey.pem'), 'utf8');
+    const certificate = fs.readFileSync(path.join(certificateLocation, 'cert.pem'), 'utf8');
+    const ca = fs.readFileSync(path.join(certificateLocation, '/chain.pem'), 'utf8');
 
     const credentials = {
         key: privateKey,
@@ -77,9 +78,10 @@ async function main(){
         app.post("/", async(req, res, next) => {
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
-                let age = req.body["age"];
                 let musicalBackground = req.body["musicalBackground"];
-                await putUser(client, cSessionId, age, musicalBackground);
+                let visualArtBackground = req.body["visualArtBackground"];
+                let additionalInformation = req.body["additionalInformation"];
+                await putUser(client, cSessionId, musicalBackground, visualArtBackground, additionalInformation);
                 res.sendStatus(200);
             }
             runAsync()
@@ -246,7 +248,7 @@ async function putAnswer(client, qSessionId, cSession, answer){
         if(!uuid.validate(cSession)){
             cSession = null;
         }
-        if (!checkIfStringIsNumber(answer)){
+        if (!isStringNumber(answer)){
             answer = null;
         }
         if(question["type"] === 2 && qSessionList[qSessionId]["shifted"]){
@@ -291,20 +293,29 @@ async function putAnswer(client, qSessionId, cSession, answer){
     }
 }
 
-async function putUser(client, cSessionId, age, mb){
+async function putUser(client, cSessionId, mb, ab, aInfo){
     if(!uuid.validate(cSessionId)) {
         return;
     }
-    if(checkIfStringIsNumber(age) || checkIfStringIsNumber(mb)) {
-        age = null;
+    if(!isStringNumber(mb)) {
         mb = null;
+    }
+    if(!isStringNumber(ab)) {
+        ab = null;
+    }
+    if(typeof aInfo === 'string' || aInfo instanceof String){
+        aInfo = aInfo.replace(/[^a-zA-Z0-9-.,!? ]/g, "");
+    }
+    else {
+        aInfo = null;
     }
 
     const answers = client.db().collection("users");
     let toPutUser = {
         "cSessionId": cSessionId,
-        "age": age,
-        "musicalBackground": mb
+        "musicalBackground": mb,
+        "visualArtBackground": ab,
+        "additionalInformation": aInfo
     }
     let result = await answers.insertOne(toPutUser);
     console.log(result);
@@ -346,7 +357,7 @@ function checkQSessionList(){
     }
 }
 
-function checkIfStringIsNumber(input){
+function isStringNumber(input){
     return /^[0-9]+$/.test(input);
 }
 

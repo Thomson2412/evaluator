@@ -96,14 +96,14 @@ function playPauseVideo(){
 }
 
 function onFormClick(){
-  let value = $('input[name="answerForm"]:checked').val();
+  let value = $('input[name="radioForm"]:checked').val();
   if(value && value !== "" && !submitted) {
     $('#submitAnswerButton').prop('disabled', false);
   }
 }
 
 function submitAnswer(){
-  let value = $('input[name="answerForm"]:checked').val();
+  let value = $('input[name="radioForm"]:checked').val();
   if(value && value !== "") {
     $('#submitAnswerButton').prop('disabled', true);
     submitted = true;

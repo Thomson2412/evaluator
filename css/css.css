@@ -87,16 +87,18 @@ button:enabled:hover{
   border-radius: 15px;
 }
 
-.answerForm{
+.radioForm{
   margin: 10px;
 }
 
-.answerForm label{
+.radioForm label{
   display:inline-block;
   text-align:center;
   margin:0 1.5em;
+  /*color: #686868;*/
+  color: var(--s_dark);
 }
-.answerForm label input[type="radio"] {
+.radioForm label input[type="radio"]{
   display:block;
   margin:0.5em auto;
 }
@@ -167,16 +169,18 @@ button:enabled:hover{
   padding: 2em;
 }
 
-.consentForm input {
-  width: 40px;
+.optionalForm textarea {
+  width: 600px;
+  height: 100px;
   margin: 10px 0 40px 0;
   padding: 12px 20px;
   border: 2px solid var(--s_light);
   border-radius: 4px;
-  text-align: center;
+  text-align: left;
   color: #424242;
   font-family: Lexend Deca, sans-serif;
   font-size: 1em;
+  resize: none;
 }
 
 .endTitle{
