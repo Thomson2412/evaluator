@@ -25,10 +25,10 @@ script.
             br
             br
             | By starting the experiment you allow us to create a cookie that allows us to identify your particular session and means that we can remember you as you move from one page to the next, thereby improving your experience on our site. This cookie will be automatically deleted from your computer after 30 days.
-            | By starting you also agree to the use of your age and musical background within the experiment evaluation.
+            | By starting you also agree to the use of the information submitted on this page within the experiment evaluation.
             | Participation in this study is voluntary. You can end your participation in the study at any time, without any explanation and without any negative consequences. If you end your participation, we will use the data collected up to that point, unless you explicitly inform us otherwise.
         br
-        .question Musical expertise:
+        .question Familiarity with music theory:
         form#musicalForm.radioForm(action='')
             label
                 input(type='radio' name='musicalForm' value='1' onclick='checkForms()')
@@ -52,7 +52,7 @@ script.
                 input(type='radio' name='musicalForm' value='7' onclick='checkForms()')
                 | High
 
-        .question Visual arts experience:
+        .question Familiarity with visual arts:
         form#artForm.radioForm(action='')
             label
                 input(type='radio' name='artForm' value='1' onclick='checkForms()')
@@ -77,9 +77,9 @@ script.
                 | High
         br
         form#optionalForm.optionalForm(action='')
-            label Elaboration on musical expertise or visual arts experience:
+            label Elaboration on familiarity:
             br
-            textarea(name='optionalForm' autocomplete='off' placeholder='(Optional)')#optionalFormInput
+            textarea(name='optionalForm' autocomplete='off' placeholder='E.g. "played piano since..." or "I visit a museum once a year" (Optional)')#optionalFormInput
 
         button#submitConsentButton(onclick='submitConsent()') Let's start :)
 
