@@ -167,3 +167,8 @@ function hideURLParams(hide) {
 function getURLParameter(name) {
   return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[undefined,null])[1]);
 }
+
+function setQueryStringParam(key, value) {
+  const baseUrl = [location.protocol, '//', location.host, location.pathname].join('');
+  window.history.pushState(null, "", baseUrl + "?" + key + "=" + value);
+}

@@ -8,6 +8,7 @@ const {MongoClient} = require("mongodb");
 const qSessionCheckInterval = 3600000;
 const qSessionTimeout = 3600000 * 4;
 const uuid = require('uuid');
+const cookieParser = require("cookie-parser");
 
 let qSessionList = {};
 
@@ -26,6 +27,7 @@ async function main(){
 
     app.set("view engine", "pug")
     app.use(express.json());
+    app.use(cookieParser());
     app.use((req, res, next) => {
         if (req.secure) {
             next();
@@ -57,10 +59,10 @@ async function main(){
     let httpServer = http.createServer(app);
     let httpsServer = https.createServer(credentials, app);
     httpServer.listen(httpPort, () => {
-        console.log(`Example app listening at http://localhost:${httpPort}`);
+        console.log(`Evaluator listening at http://localhost:${httpPort}`);
     });
     httpsServer.listen(httpsPort, () => {
-        console.log(`Example app listening at http://localhost:${httpsPort}`);
+        console.log(`Evaluator listening at https://localhost:${httpsPort}`);
     })
 
     try {
@@ -68,6 +70,7 @@ async function main(){
         setInterval(checkQSessionList, qSessionCheckInterval);
 
         app.get("/", async(req, res, next) => {
+            console.log("GET /");
             async function runAsync () {
                 res.render("welcome", {});
             }
@@ -76,11 +79,13 @@ async function main(){
         });
 
         app.post("/", async(req, res, next) => {
+            console.log("POST /");
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
                 let musicalBackground = req.body["musicalBackground"];
                 let visualArtBackground = req.body["visualArtBackground"];
                 let additionalInformation = req.body["additionalInformation"];
+                console.log("cSession: " + cSessionId);
                 await putUser(client, cSessionId, musicalBackground, visualArtBackground, additionalInformation);
                 res.sendStatus(200);
             }
@@ -89,8 +94,13 @@ async function main(){
         });
 
         app.get("/question", async(req, res, next) => {
+            console.log("GET /question");
             async function runAsync () {
-                let cSession = req.query["cSession"];
+                let cSession = req.cookies["cSessionId"];
+                if(!cSession){
+                    cSession = req.query["cSession"];
+                }
+                console.log("cSession " + cSession);
                 let question = await getQuestion(client, cSession);
                 if(question !== null && question !== undefined && question !== "end") {
                     let qSessionId = uuid.v4();
@@ -100,6 +110,7 @@ async function main(){
                         "time": date.getTime(),
                         "shifted": false
                     }
+                    console.log("Created qSession " + qSessionId);
                     let options = {
                         qId: question["_id"].toString(),
                         question: question["question"],
@@ -121,12 +132,15 @@ async function main(){
                         options["content"] = contentArr;
                         options["isMuted"] = mutedArr;
                     }
+                    console.log("Render question");
                     res.render("question", options);
                 }
                 else if(question === "end") {
+                    console.log("Render end");
                     res.render("end", {});
                 }
                 else {
+                    console.log("Render oops");
                     res.render("oops", {});
                 }
             }
@@ -135,10 +149,13 @@ async function main(){
         });
 
         app.post("/question", async(req, res, next) => {
+            console.log("POST /question");
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
                 let qSessionId = req.body["qSession"];
                 let answer = req.body["value"];
+                console.log("cSession: " + cSessionId);
+                console.log("qSession: " + qSessionId);
                 await putAnswer(client, qSessionId, cSessionId, answer);
                 res.sendStatus(200);
             }
@@ -147,18 +164,23 @@ async function main(){
         });
 
         app.post("/checkSession", async(req, res, next) => {
+            console.log("POST /checkSession");
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
+                console.log("cSession: " + cSessionId);
                 if(uuid.validate(cSessionId)) {
                     let user = await client.db().collection("users").findOne({"cSessionId": cSessionId});
                     if (user) {
+                        console.log("Found user: " + user["_id"]);
                         res.sendStatus(200);
                     }
                     else {
+                        console.log("User not found");
                         res.sendStatus(204);
                     }
                 }
                 else {
+                    console.log("Invalid uuid: " + cSessionId);
                     res.sendStatus(204);
                 }
             }
@@ -167,7 +189,9 @@ async function main(){
         });
 
         app.post("/close", (req, res) => {
+            console.log("POST /close");
             let qSessionId = req.body["qSession"];
+            console.log("Close qSession: " + qSessionId);
             if(uuid.validate(qSessionId) && qSessionList[qSessionId]) {
                 delete qSessionList[qSessionId];
             }
@@ -266,8 +290,10 @@ async function putAnswer(client, qSessionId, cSession, answer){
             "result": answer
         }
         let result = await answersCollection.insertOne(toPutAnswer);
+        console.log("Delete session after answer: " + qSessionId);
         delete qSessionList[qSessionId]
-        console.log(result);
+        console.log(result["result"]);
+
         if(cSession !== null && uuid.validate(cSession)) {
             let user = await usersCollection.findOne({"cSessionId": cSession});
             if(user) {
@@ -276,7 +302,7 @@ async function putAnswer(client, qSessionId, cSession, answer){
                     userAnsweredQuestionsIds = user["answeredQuestionIds"];
                 }
                 userAnsweredQuestionsIds.push(question["_id"]);
-                let updateResult = await usersCollection.update(
+                let updateResult = await usersCollection.updateOne(
                     {cSessionId: cSession},
                     {
                         $set: {
@@ -284,7 +310,7 @@ async function putAnswer(client, qSessionId, cSession, answer){
                         }
                     }
                 );
-                console.log(updateResult);
+                console.log(updateResult["result"]);
             }
         }
     }
@@ -318,7 +344,7 @@ async function putUser(client, cSessionId, mb, ab, aInfo){
         "additionalInformation": aInfo
     }
     let result = await answers.insertOne(toPutUser);
-    console.log(result);
+    console.log(result["result"]);
 }
 
 function getRandomMin(countObject){
