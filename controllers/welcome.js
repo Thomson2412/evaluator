@@ -1,31 +1,6 @@
 function initClient(){
     $('#submitConsentButton').prop('disabled', true);
     checkSession();
-    setInputCheck($("#consentFormInput").get(0), function(value) {
-        return isAgeValid(value);
-    });
-}
-
-function setInputCheck(textbox, inputFilter) {
-    ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
-        textbox.addEventListener(event, function() {
-            checkForms();
-            if (inputFilter(this.value)) {
-                this.oldValue = this.value;
-                this.oldSelectionStart = this.selectionStart;
-                this.oldSelectionEnd = this.selectionEnd;
-            } else if (this.hasOwnProperty("oldValue")) {
-                this.value = this.oldValue;
-                this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-            } else {
-                this.value = "";
-            }
-        });
-    });
-}
-
-function isAgeValid(value){
-    return /^\d{0,2}$/.test(value);
 }
 
 function checkForms(){

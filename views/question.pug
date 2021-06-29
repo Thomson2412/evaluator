@@ -52,33 +52,33 @@ script.
         if type === 0 || type === 1
             form#radioForm.radioForm(action='')
                 label
-                    input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='1' onclick='onFormClick()')
                     | #{scaleLow}
                 label
-                    input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='2' onclick='onFormClick()')
                     | 2
                 label
-                    input(type='radio' name='answerForm' value='3' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='3' onclick='onFormClick()')
                     | 3
                 label
-                    input(type='radio' name='answerForm' value='4' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='4' onclick='onFormClick()')
                     | 4
                 label
-                    input(type='radio' name='answerForm' value='5' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='5' onclick='onFormClick()')
                     | 5
                 label
-                    input(type='radio' name='answerForm' value='6' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='6' onclick='onFormClick()')
                     | 6
                 label
-                    input(type='radio' name='answerForm' value='7' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='7' onclick='onFormClick()')
                     | #{scaleHigh}
         if type === 2
             form#radioForm.radioForm(action='')
                 label
-                    input(type='radio' name='answerForm' value='1' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='1' onclick='onFormClick()')
                     | #{scaleLow}
                 label
-                    input(type='radio' name='answerForm' value='2' onclick='onFormClick()')
+                    input(type='radio' name='radioForm' value='2' onclick='onFormClick()')
                     | #{scaleHigh}
         button#submitAnswerButton(onclick='submitAnswer()') Submit answer
 .questionId Questions: #{qId}
