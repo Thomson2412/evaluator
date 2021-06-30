@@ -27,19 +27,19 @@ script.
                 img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
                 img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
             #progressBar.progressBar
-            audio#audioSource(src="content/" + content)
+            audio#audioSource(src="content/" + content playsinline)
                 p Your browser doesn't support HTML5 audio.
                     br
                     a(href="content/" + content) Here is a link to the audio instead.
         if type === 2
             #videoContent.videoContent
                 .videoLabel
-                    video#videoSource0.videoSource(src="content/" + content[0], muted=isMuted[0])
+                    video#videoSource0.videoSource(src="content/" + content[0], muted=isMuted[0] playsinline)
                         p Your browser doesn't support HTML5 video.
                     br
                     | First
                 .videoLabel
-                    video#videoSource1.videoSource(src="content/" + content[1] muted=isMuted[1])
+                    video#videoSource1.videoSource(src="content/" + content[1] muted=isMuted[1] playsinline)
                         p Your browser doesn't support HTML5 video.
                     br
                     | Second
