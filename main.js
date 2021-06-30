@@ -70,7 +70,7 @@ async function main(){
         setInterval(checkQSessionList, qSessionCheckInterval);
 
         app.get("/", async(req, res, next) => {
-            console.log("GET /");
+            console.log("GET /: " + req.ip);
             async function runAsync () {
                 res.render("welcome", {});
             }
@@ -79,7 +79,7 @@ async function main(){
         });
 
         app.post("/", async(req, res, next) => {
-            console.log("POST /");
+            console.log("POST /: " + req.ip);
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
                 let musicalBackground = req.body["musicalBackground"];
@@ -94,7 +94,7 @@ async function main(){
         });
 
         app.get("/question", async(req, res, next) => {
-            console.log("GET /question");
+            console.log("GET /question: " + req.ip);
             async function runAsync () {
                 let cSession = req.cookies["cSessionId"];
                 if(!cSession){
@@ -149,7 +149,7 @@ async function main(){
         });
 
         app.post("/question", async(req, res, next) => {
-            console.log("POST /question");
+            console.log("POST /question: " + req.ip);
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
                 let qSessionId = req.body["qSession"];
@@ -164,7 +164,7 @@ async function main(){
         });
 
         app.post("/checkSession", async(req, res, next) => {
-            console.log("POST /checkSession");
+            console.log("POST /checkSession: " + req.ip);
             async function runAsync () {
                 let cSessionId = req.body["cSession"];
                 console.log("cSession: " + cSessionId);
@@ -189,7 +189,7 @@ async function main(){
         });
 
         app.post("/close", (req, res) => {
-            console.log("POST /close");
+            console.log("POST /close: " + req.ip);
             let qSessionId = req.body["qSession"];
             console.log("Close qSession: " + qSessionId);
             if(uuid.validate(qSessionId) && qSessionList[qSessionId]) {
