@@ -60,6 +60,9 @@ function initClient(qSession){
     cSessionId = cSessionIdCookie;
     $("#cSessionId").text("cSession: " + cSessionId);
   }
+  else if(cookieCheck()){
+    location.replace("/");
+  }
   else {
     $("#cSessionId").text("cSession: sessionLess");
   }
@@ -166,4 +169,16 @@ function hideURLParams(hide) {
 
 function getURLParameter(name) {
   return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[undefined,null])[1]);
+}
+
+function cookieCheck(){
+  Cookies.set("test", "test");
+  const test = Cookies.get("test");
+  if (test === "test"){
+    Cookies.remove("test")
+    return true;
+  }
+  else {
+    return false;
+  }
 }
