@@ -26,11 +26,11 @@ script.
             button#playPauseButton(onclick='playPauseAudio()')
                 img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
                 img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
-            #progressBar.progressBar
             audio#audioSource(src="content/" + content playsinline)
                 p Your browser doesn't support HTML5 audio.
                     br
                     a(href="content/" + content) Here is a link to the audio instead.
+            #progressBar.progressBar
         if type === 2
             #videoContent.videoContent
                 .videoLabel
@@ -46,6 +46,19 @@ script.
             button#playPauseButton(onclick='playPauseVideo()')
                 img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
                 img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
+            #progressBar.progressBar
+        if type === 3
+            #paintingContent
+                img(src="content/" + content[0]).paintingContent
+            #paintingContent
+                img(src="content/" + content[1]).paintingContent
+            button#playPauseButton(onclick='playPauseAudio()')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
+            audio#audioSource(src="content/" + content[2] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[2]) Here is a link to the audio instead.
             #progressBar.progressBar
     #questionContainer.questionContainer
         .question #{question}
@@ -72,7 +85,7 @@ script.
                 label
                     input(type='radio' name='radioForm' value='7' onclick='onFormClick()')
                     | #{scaleHigh}
-        if type === 2
+        if type === 2 || type === 3
             form#radioForm.radioForm(action='')
                 label
                     input(type='radio' name='radioForm' value='1' onclick='onFormClick()')

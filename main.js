@@ -132,6 +132,17 @@ async function main(){
                         options["content"] = contentArr;
                         options["isMuted"] = mutedArr;
                     }
+                    if (question["type"] === 3){
+                        let contentArrFull = [...question["content"]];
+                        let contentArrImg = [contentArrFull[0], contentArrFull[1]]
+                        const randomInt = Math.round(Math.random());
+                        if (randomInt === 1) {
+                            contentArrFull[0] = contentArrImg[1]
+                            contentArrFull[1] = contentArrImg[0]
+                            qSessionList[qSessionId]["shifted"] = true;
+                        }
+                        options["content"] = contentArrFull;
+                    }
                     console.log("Render question");
                     res.render("question", options);
                 }
@@ -275,7 +286,7 @@ async function putAnswer(client, qSessionId, cSession, answer){
         if (!isStringNumber(answer)){
             answer = null;
         }
-        if(question["type"] === 2 && qSessionList[qSessionId]["shifted"]){
+        if((question["type"] === 2 || question["type"] === 3) && qSessionList[qSessionId]["shifted"]){
             if(answer === "1"){
                 answer = "2";
             }
