@@ -37,21 +37,26 @@ script.
                     video#videoSource0.videoSource(src="content/" + content[0], muted=isMuted[0] playsinline)
                         p Your browser doesn't support HTML5 video.
                     br
-                    | First
+                    | #{scaleLow}
                 .videoLabel
                     video#videoSource1.videoSource(src="content/" + content[1] muted=isMuted[1] playsinline)
                         p Your browser doesn't support HTML5 video.
                     br
-                    | Second
+                    | #{scaleHigh}
             button#playPauseButton(onclick='playPauseVideo()')
                 img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
                 img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
             #progressBar.progressBar
         if type === 3
             #paintingContent
-                img(src="content/" + content[0]).paintingContent
-            #paintingContent
-                img(src="content/" + content[1]).paintingContent
+                .paintingLabel
+                    img(src="content/" + content[0]).paintingContentSBS
+                    br
+                    | #{scaleLow}
+                .paintingLabel
+                    img(src="content/" + content[1]).paintingContentSBS
+                    br
+                    | #{scaleHigh}
             button#playPauseButton(onclick='playPauseAudio()')
                 img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
                 img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent

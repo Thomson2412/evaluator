@@ -61,6 +61,17 @@ button:enabled:hover{
   height:auto;
 }
 
+.paintingContentSBS{
+  max-width: 38vh;
+  max-height: 40vh;
+  height:auto;
+  margin: 0 40px;
+}
+
+.paintingLabel{
+  display: inline-block;
+}
+
 .audioContent{
   width:100%;
   height:auto;
