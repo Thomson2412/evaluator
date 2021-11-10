@@ -1,7 +1,7 @@
 let cSessionId;
 let qSessionId;
 let submitted = false;
-let audioElem;
+let audioElems = [];
 let video0Elem;
 let video1Elem;
 let nextQuestionCounter = 0;
@@ -9,49 +9,44 @@ let nextQuestionThreshold = 5;
 
 function initClient(qSession){
   qSessionId = qSession;
-  $('#submitAnswerButton').prop('disabled', true);
-  $('#audioPauseIcon').hide();
+  $("#submitAnswerButton").prop("disabled", true);
+  $("#audioPauseIcon").hide();
   $(window).on("beforeunload", () => {
     if(!submitted) {
       let host = window.location.protocol + "//" + window.location.host + "/close";
       let xhr = new XMLHttpRequest();
       xhr.open("POST", host, true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader("Content-Type", "application/json");
       xhr.send(JSON.stringify({
         qSession: qSessionId,
       }));
     }
   });
-  audioElem = $('#audioSource');
-  if(audioElem.length){
-    audioElem.on('timeupdate', () => {
-      let currentTime = audioElem.get(0).currentTime;
-      let duration = audioElem.get(0).duration;
-      let progressPercentage = (currentTime / duration) * 100;
-      $('#progressBar').width(progressPercentage + '%')
-    });
+
+  $("audio").each(function (index){
+    let audioElem = $(this);
+    let elemId = this.id.toString();
+    let numId = parseInt(elemId.substr(-1));
+    audioElems[numId] = audioElem;
+    audioElem.on("timeupdate", () => updateProgressBar(audioElem));
     audioElem.on("ended", () => {
-      $('#audioPlayIcon').show();
-      $('#audioPauseIcon').hide();
+      $("#audioPlayIcon" + numId).show();
+      $("#audioPauseIcon" + numId).hide();
     });
-  }
-  video0Elem = $('#videoSource0');
-  video1Elem = $('#videoSource1');
+  });
+
+  video0Elem = $("#videoSource0");
+  video1Elem = $("#videoSource1");
   if(video0Elem.length && video1Elem.length){
-    video0Elem.on('timeupdate', () => {
-      let currentTime = video0Elem.get(0).currentTime;
-      let duration = video0Elem.get(0).duration;
-      let progressPercentage = (currentTime / duration) * 100;
-      $('#progressBar').width(progressPercentage + '%')
-    });
+    video0Elem.on("timeupdate", () => updateProgressBar(video0Elem));
     video0Elem.on("ended", () => {
-      $('#audioPlayIcon').show();
-      $('#audioPauseIcon').hide();
+      $("#audioPlayIcon").show();
+      $("#audioPauseIcon").hide();
     });
   }
 
   const cSessionIdCookie = Cookies.get("cSessionId")
-  const cSessionIdUrl = new URLSearchParams(window.location.search).get('cSession');
+  const cSessionIdUrl = new URLSearchParams(window.location.search).get("cSession");
   if(cSessionIdCookie && checkUuid(cSessionIdCookie)){
     cSessionId = cSessionIdCookie;
     $("#cSessionId").text("cSession: " + cSessionId);
@@ -70,16 +65,30 @@ function initClient(qSession){
   $("#qSessionId").text("qSession: " + qSessionId);
 }
 
-function playPauseAudio(){
-  if(audioElem.get(0).paused) {
+function playPauseAudio(id){
+  let audioElem = audioElems[id];
+  if(audioElem.get(0).paused){
     audioElem.get(0).play();
-    $('#audioPlayIcon').hide();
-    $('#audioPauseIcon').show();
+    $("#audioPlayIcon" + id).hide();
+    $("#audioPauseIcon" + id).show();
   }
   else {
     audioElem.get(0).pause();
-    $('#audioPlayIcon').show();
-    $('#audioPauseIcon').hide();
+    $("#audioPlayIcon" + id).show();
+    $("#audioPauseIcon" + id).hide();
+  }
+  if(!audioElems[id].get(0).paused) {
+    for(let key in audioElems){
+      key = parseInt(key);
+      if(key !== id){
+        if(!audioElems[key].get(0).paused) {
+          audioElems[key].get(0).pause();
+          audioElems[key].get(0).currentTime = 0;
+          $("#audioPlayIcon" + key).show();
+          $("#audioPauseIcon" + key).hide();
+        }
+      }
+    }
   }
 }
 
@@ -87,31 +96,42 @@ function playPauseVideo(){
   if(video0Elem.get(0).paused || video1Elem.get(0).paused) {
     video0Elem.get(0).play();
     video1Elem.get(0).play();
-    $('#audioPlayIcon').hide();
-    $('#audioPauseIcon').show();
+    $("#audioPlayIcon").hide();
+    $("#audioPauseIcon").show();
   }
   else {
     video0Elem.get(0).pause();
     video1Elem.get(0).pause();
-    $('#audioPlayIcon').show();
-    $('#audioPauseIcon').hide();
+    $("#audioPlayIcon").show();
+    $("#audioPauseIcon").hide();
   }
+}
+
+function updateProgressBar(elem){
+  let currentTime = elem.get(0).currentTime;
+  let duration = elem.get(0).duration;
+  let progressPercentage = (currentTime / duration) * 100;
+  $("#progressBar").width(progressPercentage + "%");
 }
 
 function onFormClick(){
   let value = $('input[name="radioForm"]:checked').val();
   if(value && value !== "" && !submitted) {
-    $('#submitAnswerButton').prop('disabled', false);
+    $("#submitAnswerButton").prop("disabled", false);
   }
 }
 
 function submitAnswer(){
   let value = $('input[name="radioForm"]:checked').val();
   if(value && value !== "") {
-    $('#submitAnswerButton').prop('disabled', true);
+    $("#submitAnswerButton").prop("disabled", true);
     submitted = true;
-    if(audioElem.length) {
-      audioElem.get(0).pause();
+    for(let key in audioElems){
+      key = parseInt(key);
+      if(!audioElems[key].get(0).paused) {
+        audioElems[key].get(0).pause();
+        audioElems[key].get(0).currentTime = 0;
+      }
     }
     if(video0Elem.length && video1Elem.length){
       video0Elem.get(0).pause();
@@ -120,13 +140,13 @@ function submitAnswer(){
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
-        $('#mainContainer').hide()
-        $('#confirmationContainer').show();
+        $("#mainContainer").hide();
+        $("#confirmationContainer").show();
         setInterval(nextQuestionCheck, 1000)
       }
     }
     xhr.open("POST", "/question", true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify({
       qSession: qSessionId,
       cSession: cSessionId,
@@ -150,7 +170,7 @@ function nextQuestionCheck(){
     nextQuestion();
   }
   else {
-    $('#getNextQuestionButtonTextCountDown').text((nextQuestionThreshold - nextQuestionCounter) + ")");
+    $("#getNextQuestionButtonTextCountDown").text((nextQuestionThreshold - nextQuestionCounter) + ")");
   }
 }
 
@@ -168,14 +188,14 @@ function hideURLParams(hide) {
 }
 
 function getURLParameter(name) {
-  return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[undefined,null])[1]);
+  return decodeURI((RegExp(name + "=" + "(.+?)(&|$)").exec(location.search)||[undefined,null])[1]);
 }
 
 function cookieCheck(){
   Cookies.set("test", "test");
   const test = Cookies.get("test");
   if (test === "test"){
-    Cookies.remove("test")
+    Cookies.remove("test");
     return true;
   }
   else {

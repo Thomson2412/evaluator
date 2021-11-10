@@ -68,6 +68,12 @@ button:enabled:hover{
   margin: 0 40px;
 }
 
+.paintingContentMC{
+  max-width:100%;
+  max-height: 42vh;
+  height:auto;
+}
+
 .paintingLabel{
   display: inline-block;
 }

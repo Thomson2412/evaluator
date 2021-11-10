@@ -23,10 +23,10 @@ script.
             #paintingContent
                 img(src="content/" + content).paintingContent
         if type === 1
-            button#playPauseButton(onclick='playPauseAudio()')
-                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
-                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
-            audio#audioSource(src="content/" + content playsinline)
+            button#playPauseButton(onclick='playPauseAudio(0)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon0.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon0.audioContent
+            audio#audioSource0(src="content/" + content playsinline)
                 p Your browser doesn't support HTML5 audio.
                     br
                     a(href="content/" + content) Here is a link to the audio instead.
@@ -57,13 +57,54 @@ script.
                     img(src="content/" + content[1]).paintingContentSBS
                     br
                     | #{scaleHigh}
-            button#playPauseButton(onclick='playPauseAudio()')
-                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
-                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
-            audio#audioSource(src="content/" + content[2] playsinline)
+            button#playPauseButton(onclick='playPauseAudio(0)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon0.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon0.audioContent
+            audio#audioSource0(src="content/" + content[2] playsinline)
                 p Your browser doesn't support HTML5 audio.
                     br
                     a(href="content/" + content[2]) Here is a link to the audio instead.
+            #progressBar.progressBar
+        if type === 4
+            #paintingContent
+                .paintingLabel
+                    img(src="content/" + content[0]).paintingContentMC
+            button#playPauseButton0(onclick='playPauseAudio(0)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon0.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon0.audioContent
+                br
+                | 1
+            audio#audioSource0(src="content/" + content[1] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[1]) Here is a link to the audio instead.
+            button#playPauseButton1(onclick='playPauseAudio(1)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon1.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon1.audioContent
+                br
+                | 2
+            audio#audioSource1(src="content/" + content[2] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[2]) Here is a link to the audio instead.
+            button#playPauseButton2(onclick='playPauseAudio(2)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon2.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon2.audioContent
+                br
+                | 3
+            audio#audioSource2(src="content/" + content[3] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[3]) Here is a link to the audio instead.
+            button#playPauseButton3(onclick='playPauseAudio(3)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon3.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon3.audioContent
+                br
+                | 4
+            audio#audioSource3(src="content/" + content[4] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[4]) Here is a link to the audio instead.
             #progressBar.progressBar
     #questionContainer.questionContainer
         .question #{question}
@@ -98,6 +139,23 @@ script.
                 label
                     input(type='radio' name='radioForm' value='2' onclick='onFormClick()')
                     | #{scaleHigh}
+        if type === 4
+            form#radioForm.radioForm(action='')
+                label
+                    input(type='radio' name='radioForm' value='1' onclick='onFormClick()')
+                    | 1
+                label
+                    input(type='radio' name='radioForm' value='2' onclick='onFormClick()')
+                    | 2
+                label
+                    input(type='radio' name='radioForm' value='3' onclick='onFormClick()')
+                    | 3
+                label
+                    input(type='radio' name='radioForm' value='4' onclick='onFormClick()')
+                    | 4
+                label
+                    input(type='radio' name='radioForm' value='None' onclick='onFormClick()')
+                    | None
         button#submitAnswerButton(onclick='submitAnswer()') Submit answer
 .questionId Questions: #{qId}
 #qSessionId.qSessionId

@@ -123,7 +123,7 @@ async function main(){
                     if (question["type"] === 2){
                         let mutedArr = [false, true]
                         let contentArr = [...question["content"]];
-                        const randomInt = Math.round(Math.random());
+                        const randomInt = getRandomInt(1);
                         if (randomInt === 1) {
                             contentArr.push(contentArr.shift());
                             mutedArr.push(mutedArr.shift());
@@ -135,13 +135,28 @@ async function main(){
                     if (question["type"] === 3){
                         let contentArrFull = [...question["content"]];
                         let contentArrImg = [contentArrFull[0], contentArrFull[1]]
-                        const randomInt = Math.round(Math.random());
+                        const randomInt = getRandomInt(1);
                         if (randomInt === 1) {
-                            contentArrFull[0] = contentArrImg[1]
-                            contentArrFull[1] = contentArrImg[0]
+                            contentArrFull[0] = contentArrImg[1];
+                            contentArrFull[1] = contentArrImg[0];
                             qSessionList[qSessionId]["shifted"] = true;
                         }
                         options["content"] = contentArrFull;
+                    }
+                    if (question["type"] === 4){
+                        let contentArrFull = [...question["content"]];
+                        let contentImg = contentArrFull[0];
+                        let contentArrAudio = contentArrFull.slice(1);
+                        let contentArrIDAudio = [];
+                        contentArrAudio.forEach((a, i) => contentArrIDAudio.push({"id": i, "audio": a}))
+                        shuffle(contentArrIDAudio)
+                        let contentOut = [];
+                        contentOut.push(contentImg);
+                        contentArrIDAudio.forEach((a) => {contentOut.push(a.audio)});
+                        let order = [];
+                        contentArrIDAudio.forEach((a) => {order.push(a.id)});
+                        qSessionList[qSessionId]["order"] = order;
+                        options["content"] = contentOut;
                     }
                     console.log("Render question");
                     res.render("question", options);
@@ -236,14 +251,14 @@ async function getQuestion(client, cSession) {
     let answerAmount = await cursor.count();
     if(answerAmount === 0){
         let questions =  await questionsCollection.find().toArray();
-        return questions[Math.floor(Math.random() * questions.length)];
+        return questions[getRandomInt(questions.length)];
     }
     else {
         let answeredQuestionsIds = await answersCollection.distinct("_id");
         answeredQuestionsIds.push(userAnsweredQuestionsIds);
         let unansweredQuestions = await questionsCollection.distinct("_id", {_id: {$nin: answeredQuestionsIds}});
         if(unansweredQuestions.length > 0){
-            let randomIndex = Math.floor(Math.random() * unansweredQuestions.length);
+            let randomIndex = getRandomInt(unansweredQuestions.length);
             let toGetId = unansweredQuestions[randomIndex];
             return await questionsCollection.findOne({_id: toGetId});
         }
@@ -266,7 +281,7 @@ async function getQuestion(client, cSession) {
             else {
                 console.log("No question found by ID, FALLBACK!")
                 let questions =  await questionsCollection.find().toArray();
-                return questions[Math.floor(Math.random() * questions.length)];
+                return questions[getRandomInt(questions.length)];
             }
         }
     }
@@ -293,6 +308,10 @@ async function putAnswer(client, qSessionId, cSession, answer){
             else if(answer === "2"){
                 answer = "1";
             }
+        }
+        if(question["type"] === 4 && answer !== null) {
+            let order = qSessionList[qSessionId]["order"]
+            answer = order[parseInt(answer) - 1]
         }
         let toPutAnswer = {
             "qId": question["_id"],
@@ -361,7 +380,7 @@ async function putUser(client, cSessionId, mb, ab, aInfo){
 function getRandomMin(countObject){
     let min = Math.min(...countObject.map(item => item.count));
     let minItems = countObject.filter(item => item.count === min)
-    let randomIndex = Math.floor(Math.random() * minItems.length);
+    let randomIndex = getRandomInt(minItems.length);
     return minItems[randomIndex];
 }
 
@@ -396,6 +415,21 @@ function checkQSessionList(){
 
 function isStringNumber(input){
     return /^[0-9]+$/.test(input);
+}
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+    return array;
 }
 
 main().catch(console.error);
