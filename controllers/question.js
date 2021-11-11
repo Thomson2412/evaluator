@@ -6,6 +6,8 @@ let video0Elem;
 let video1Elem;
 let nextQuestionCounter = 0;
 let nextQuestionThreshold = 5;
+let isPlayed = new Set();
+let isFinished = new Set();
 
 function initClient(qSession){
   qSessionId = qSession;
@@ -30,8 +32,12 @@ function initClient(qSession){
     audioElems[numId] = audioElem;
     audioElem.on("timeupdate", () => updateProgressBar(audioElem));
     audioElem.on("ended", () => {
-      $("#audioPlayIcon" + numId).show();
+      if(!isFinished.has(numId))
+        isFinished.add(numId);
+      let playIcon = $("#audioPlayIcon" + numId);
+      playIcon.show();
       $("#audioPauseIcon" + numId).hide();
+      playIcon.parent().css("background", "#C5E1A5");
     });
   });
 
@@ -40,8 +46,11 @@ function initClient(qSession){
   if(video0Elem.length && video1Elem.length){
     video0Elem.on("timeupdate", () => updateProgressBar(video0Elem));
     video0Elem.on("ended", () => {
-      $("#audioPlayIcon").show();
+      isFinished.add(0);
+      let playIcon = $("#audioPlayIcon");
+      playIcon.show();
       $("#audioPauseIcon").hide();
+      playIcon.parent().css("background", "#C5E1A5");
     });
   }
 
@@ -68,9 +77,15 @@ function initClient(qSession){
 function playPauseAudio(id){
   let audioElem = audioElems[id];
   if(audioElem.get(0).paused){
+    if(!isPlayed.has(id))
+      isPlayed.add(id);
+    submitEnable();
     audioElem.get(0).play();
-    $("#audioPlayIcon" + id).hide();
+    let playIcon = $("#audioPlayIcon" + id);
+    playIcon.hide();
     $("#audioPauseIcon" + id).show();
+    if(!isFinished.has(id))
+      playIcon.parent().css("background", "#FFCC80");
   }
   else {
     audioElem.get(0).pause();
@@ -94,10 +109,15 @@ function playPauseAudio(id){
 
 function playPauseVideo(){
   if(video0Elem.get(0).paused || video1Elem.get(0).paused) {
+    isPlayed.add(0);
+    submitEnable();
     video0Elem.get(0).play();
     video1Elem.get(0).play();
-    $("#audioPlayIcon").hide();
+    let playIcon = $("#audioPlayIcon");
+    playIcon.hide();
     $("#audioPauseIcon").show();
+    if(!isFinished.has(0))
+      playIcon.parent().css("background", "#FFCC80");
   }
   else {
     video0Elem.get(0).pause();
@@ -115,9 +135,22 @@ function updateProgressBar(elem){
 }
 
 function onFormClick(){
+  submitEnable();
+}
+
+function submitEnable(){
   let value = $('input[name="radioForm"]:checked').val();
   if(value && value !== "" && !submitted) {
-    $("#submitAnswerButton").prop("disabled", false);
+    if (audioElems.length > 0) {
+      if (isPlayed.size === audioElems.length)
+        $("#submitAnswerButton").prop("disabled", false);
+    } else if (video0Elem.length && video1Elem.length) {
+      if (isPlayed.has(0))
+        $("#submitAnswerButton").prop("disabled", false);
+    }
+    else {
+      $("#submitAnswerButton").prop("disabled", false);
+    }
   }
 }
 

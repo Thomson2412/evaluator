@@ -304,20 +304,25 @@ async function putAnswer(client, qSessionId, cSession, answer){
         if(!uuid.validate(cSession)){
             cSession = null;
         }
-        if (!isStringNumber(answer)){
+        if (isStringNumber(answer)){
+            answer = parseInt(answer);
+        }
+        else {
             answer = null;
         }
         if((question["type"] === 2 || question["type"] === 3) && qSessionList[qSessionId]["shifted"]){
-            if(answer === "1"){
-                answer = "2";
+            if(answer === 1){
+                answer = 2;
             }
-            else if(answer === "2"){
-                answer = "1";
+            else if(answer === 2){
+                answer = 1;
             }
         }
         if((question["type"] === 4 || question["type"] === 5) && answer !== null) {
-            let order = qSessionList[qSessionId]["order"]
-            answer = order[parseInt(answer) - 1]
+            if (answer >= 0) {
+                let order = qSessionList[qSessionId]["order"];
+                answer = order[parseInt(answer) - 1];
+            }
         }
         let toPutAnswer = {
             "qId": question["_id"],
@@ -420,7 +425,7 @@ function checkQSessionList(){
 }
 
 function isStringNumber(input){
-    return /^[0-9]+$/.test(input);
+    return /^[-]?[0-9]+$/.test(input);
 }
 
 function getRandomInt(max) {
