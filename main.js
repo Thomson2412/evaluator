@@ -143,15 +143,21 @@ async function main(){
                         }
                         options["content"] = contentArrFull;
                     }
-                    if (question["type"] === 4){
+                    if (question["type"] === 4 || question["type"] === 5){
                         let contentArrFull = [...question["content"]];
-                        let contentImg = contentArrFull[0];
-                        let contentArrAudio = contentArrFull.slice(1);
+                        let contentArrAudio;
+                        if(question["type"] === 4)
+                            contentArrAudio = contentArrFull.slice(1);
+                        else
+                            contentArrAudio = contentArrFull;
                         let contentArrIDAudio = [];
                         contentArrAudio.forEach((a, i) => contentArrIDAudio.push({"id": i, "audio": a}))
                         shuffle(contentArrIDAudio)
                         let contentOut = [];
-                        contentOut.push(contentImg);
+                        if(question["type"] === 4){
+                            let contentImg = contentArrFull[0];
+                            contentOut.push(contentImg);
+                        }
                         contentArrIDAudio.forEach((a) => {contentOut.push(a.audio)});
                         let order = [];
                         contentArrIDAudio.forEach((a) => {order.push(a.id)});
@@ -309,7 +315,7 @@ async function putAnswer(client, qSessionId, cSession, answer){
                 answer = "1";
             }
         }
-        if(question["type"] === 4 && answer !== null) {
+        if((question["type"] === 4 || question["type"] === 5) && answer !== null) {
             let order = qSessionList[qSessionId]["order"]
             answer = order[parseInt(answer) - 1]
         }
