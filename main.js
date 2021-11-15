@@ -5,6 +5,7 @@ const https = require("https");
 const path = require("path");
 const fs = require("fs");
 const {MongoClient} = require("mongodb");
+ObjectID = require('mongodb').ObjectID
 const qSessionCheckInterval = 3600000;
 const qSessionTimeout = 3600000 * 4;
 const uuid = require('uuid');
@@ -260,8 +261,7 @@ async function getQuestion(client, cSession) {
         return questions[getRandomInt(questions.length)];
     }
     else {
-        let answeredQuestionsIds = await answersCollection.distinct("_id");
-        answeredQuestionsIds.push(userAnsweredQuestionsIds);
+        let answeredQuestionsIds = await answersCollection.distinct("qId");
         let unansweredQuestions = await questionsCollection.distinct("_id", {_id: {$nin: answeredQuestionsIds}});
         if(unansweredQuestions.length > 0){
             let randomIndex = getRandomInt(unansweredQuestions.length);
