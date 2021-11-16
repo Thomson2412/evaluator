@@ -21,66 +21,74 @@ script.
 #mainContainer.mainContainer
     #contentContainer.contentContainer
         .consentText
-            | We would like to invite you to participate in the research project "Sonification: Extending the Visual Arts experience". The purpose of this study is to see how people experience visual art and sound and how they could be combined. In this experiment you will be asked questions about color properties and sound properties. You can stop the experiment whenever you like and can continue as long as you want. I hope you have fun answering our questions!
+            | We would like to invite you to participate in the research project "Sonification: Extending the Visual Arts experience".
+            | The purpose of this study is to see how people experience visual art and sound and how they could be combined.
+            | In this experiment you will be asked questions about different models and their performance.
+            | You can stop the experiment whenever you like and can continue as long as you want.
+            | I hope you have fun answering our questions!
             br
             br
-            | By starting the experiment you allow us to create a cookie that allows us to identify your particular session and means that we can remember you as you move from one page to the next, thereby improving your experience on our site. This cookie will be automatically deleted from your computer after 30 days.
-            | By starting you also agree to the use of the information submitted on this page within the experiment evaluation.
-            | Participation in this study is voluntary. You can end your participation in the study at any time, without any explanation and without any negative consequences. If you end your participation, we will use the data collected up to that point, unless you explicitly inform us otherwise.
+            | By starting the experiment you allow us to create a cookie that allows us to identify your particular session and means that we can remember you as you move from one page to the next, thereby improving your experience on our site.
+            | This cookie will automatically expire after 30 days.
+            br
+            br
+            | By starting you also agree to the use of the information submitted on this website within the experiment evaluation.
+            | Participation in this study is voluntary. You can end your participation in the study at any time, without any explanation and without any negative consequences.
+            | If you end your participation, we will use the data collected up to that point, unless you explicitly inform us otherwise.
         br
-        .question Familiarity with music theory:
-        form#musicalForm.radioForm(action='')
-            label
-                input(type='radio' name='musicalForm' value='1' onclick='checkForms()')
-                | Low
-            label
-                input(type='radio' name='musicalForm' value='2' onclick='checkForms()')
-                | 2
-            label
-                input(type='radio' name='musicalForm' value='3' onclick='checkForms()')
-                | 3
-            label
-                input(type='radio' name='musicalForm' value='4' onclick='checkForms()')
-                | 4
-            label
-                input(type='radio' name='musicalForm' value='5' onclick='checkForms()')
-                | 5
-            label
-                input(type='radio' name='musicalForm' value='6' onclick='checkForms()')
-                | 6
-            label
-                input(type='radio' name='musicalForm' value='7' onclick='checkForms()')
-                | High
+        //.question Familiarity with music theory:
+        //form#musicalForm.radioForm(action='')
+        //    label
+        //        input(type='radio' name='musicalForm' value='1' onclick='checkForms()')
+        //        | Low
+        //    label
+        //        input(type='radio' name='musicalForm' value='2' onclick='checkForms()')
+        //        | 2
+        //    label
+        //        input(type='radio' name='musicalForm' value='3' onclick='checkForms()')
+        //        | 3
+        //    label
+        //        input(type='radio' name='musicalForm' value='4' onclick='checkForms()')
+        //        | 4
+        //    label
+        //        input(type='radio' name='musicalForm' value='5' onclick='checkForms()')
+        //        | 5
+        //    label
+        //        input(type='radio' name='musicalForm' value='6' onclick='checkForms()')
+        //        | 6
+        //    label
+        //        input(type='radio' name='musicalForm' value='7' onclick='checkForms()')
+        //        | High
+        //
+        //.question Familiarity with visual arts:
+        //form#artForm.radioForm(action='')
+        //    label
+        //        input(type='radio' name='artForm' value='1' onclick='checkForms()')
+        //        | Low
+        //    label
+        //        input(type='radio' name='artForm' value='2' onclick='checkForms()')
+        //        | 2
+        //    label
+        //        input(type='radio' name='artForm' value='3' onclick='checkForms()')
+        //        | 3
+        //    label
+        //        input(type='radio' name='artForm' value='4' onclick='checkForms()')
+        //        | 4
+        //    label
+        //        input(type='radio' name='artForm' value='5' onclick='checkForms()')
+        //        | 5
+        //    label
+        //        input(type='radio' name='artForm' value='6' onclick='checkForms()')
+        //        | 6
+        //    label
+        //        input(type='radio' name='artForm' value='7' onclick='checkForms()')
+        //        | High
+        //br
+        //form#optionalForm.optionalForm(action='')
+        //    label Elaboration on familiarity:
+        //    br
+        //    textarea(name='optionalForm' autocomplete='off' placeholder='E.g. "played piano since..." or "I visit a museum once a year" (Optional)')#optionalFormInput
 
-        .question Familiarity with visual arts:
-        form#artForm.radioForm(action='')
-            label
-                input(type='radio' name='artForm' value='1' onclick='checkForms()')
-                | Low
-            label
-                input(type='radio' name='artForm' value='2' onclick='checkForms()')
-                | 2
-            label
-                input(type='radio' name='artForm' value='3' onclick='checkForms()')
-                | 3
-            label
-                input(type='radio' name='artForm' value='4' onclick='checkForms()')
-                | 4
-            label
-                input(type='radio' name='artForm' value='5' onclick='checkForms()')
-                | 5
-            label
-                input(type='radio' name='artForm' value='6' onclick='checkForms()')
-                | 6
-            label
-                input(type='radio' name='artForm' value='7' onclick='checkForms()')
-                | High
-        br
-        form#optionalForm.optionalForm(action='')
-            label Elaboration on familiarity:
-            br
-            textarea(name='optionalForm' autocomplete='off' placeholder='E.g. "played piano since..." or "I visit a museum once a year" (Optional)')#optionalFormInput
-
-        button#submitConsentButton(onclick='submitConsent()' disabled=true) Let's start :)
+        button#submitConsentButton(onclick='submitConsent()' disabled=false) Let's start :)
 
         .contactInformation t.m.w.fink@students.uu.nl

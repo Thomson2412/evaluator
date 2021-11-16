@@ -126,7 +126,7 @@ button:enabled:hover{
 
 .confirmationContainer{
   display: none;
-  margin: 1%;
+  margin: 3%;
   padding: 1%;
   text-align: center;
   background-color: var(--p_light);

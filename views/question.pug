@@ -205,7 +205,8 @@ script.
 .contactInformation t.m.w.fink@students.uu.nl
 #confirmationContainer.confirmationContainer
     .thankYouTitle Thank You!
-    img(src="img/draw-soft-and-cute-cartoon-animals.jpg").paintingContent
+    if thankYouImg !== null
+        img(src="img/thankyou/" + thankYouImg).paintingContent
     .thankYouMsg Your submission is very much appreciated :)
     button#getNextQuestionButton(onclick='nextQuestion()')
         span#getNextQuestionButtonText Give me another one! (

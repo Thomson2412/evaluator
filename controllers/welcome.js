@@ -1,5 +1,5 @@
 function initClient(){
-    $('#submitConsentButton').prop('disabled', true);
+    // $('#submitConsentButton').prop('disabled', true);
     checkSession();
 }
 
@@ -40,25 +40,23 @@ function checkSession(){
 }
 
 function submitConsent(){
-    if (checkForms()) {
-        const mbValue = $('input[name="musicalForm"]:checked').val();
-        const vabValue = $('input[name="artForm"]:checked').val();
-        const aInfo = $('textarea[name="optionalForm"]').val();
-        $('#submitConsentButton').prop('disabled', true);
-        const cSessionId = generateSession();
-        let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                location.replace("/question?cSession=" + cSessionId);
-            }
+    // const mbValue = $('input[name="musicalForm"]:checked').val();
+    // const vabValue = $('input[name="artForm"]:checked').val();
+    // const aInfo = $('textarea[name="optionalForm"]').val();
+    $('#submitConsentButton').prop('disabled', true);
+    const cSessionId = generateSession();
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+            location.replace("/question?cSession=" + cSessionId);
         }
-        xhr.open("POST", "/", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({
-            cSession: cSessionId,
-            musicalBackground: mbValue,
-            visualArtBackground: vabValue,
-            additionalInformation: aInfo
-        }));
     }
+    xhr.open("POST", "/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        cSession: cSessionId,
+        // musicalBackground: mbValue,
+        // visualArtBackground: vabValue,
+        // additionalInformation: aInfo
+    }));
 }

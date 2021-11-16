@@ -5,7 +5,6 @@ const https = require("https");
 const path = require("path");
 const fs = require("fs");
 const {MongoClient} = require("mongodb");
-ObjectID = require('mongodb').ObjectID
 const qSessionCheckInterval = 3600000;
 const qSessionTimeout = 3600000 * 4;
 const uuid = require('uuid');
@@ -25,6 +24,8 @@ async function main(){
     const certificateLocation = config[7];
     const uri = "mongodb://" + user + ":" + pass + "@" + location + ":" + port +"/" + db + "?authSource=" + db;
     const client = new MongoClient(uri, {"useUnifiedTopology": true});
+
+    let thankYouFiles = getThankYouFiles(path.join(__dirname, "/img/thankyou"));
 
     app.set("view engine", "pug")
     app.use(express.json());
@@ -119,7 +120,11 @@ async function main(){
                         scaleLow: question["scale"][0],
                         scaleHigh: question["scale"][1],
                         content: question["content"],
-                        qSession: qSessionId
+                        qSession: qSessionId,
+                        thankYouImg: null
+                    }
+                    if(thankYouFiles.length > 0){
+                        options["thankYouImg"] = thankYouFiles[getRandomInt(thankYouFiles.length)];
                     }
                     if (question["type"] === 2){
                         let mutedArr = [false, true]
@@ -403,6 +408,18 @@ function getConfig(){
         result.push(line)
     });
     return result
+}
+
+function getThankYouFiles(dir){
+    let result = [];
+    let files = fs.readdirSync(dir);
+    for (let i in files){
+        let pathName = path.join(dir, files[i]);
+        if (!fs.statSync(pathName).isDirectory()) {
+            result.push(files[i]);
+        }
+    }
+    return result;
 }
 
 function checkQSessionList(){
