@@ -43,16 +43,13 @@ function initClient(qSession){
 
   video0Elem = $("#videoSource0");
   video1Elem = $("#videoSource1");
-  if(video0Elem.length && video1Elem.length){
-    video0Elem.on("timeupdate", () => updateProgressBar(video0Elem));
-    video0Elem.on("ended", () => {
-      isFinished.add(0);
-      let playIcon = $("#audioPlayIcon");
-      playIcon.show();
-      $("#audioPauseIcon").hide();
-      playIcon.parent().css("background", "#C5E1A5");
-    });
-  }
+  initVideoElems(video0Elem, video0Elem);
+  video0Elem.on("loadedmetadata", () => {
+    initVideoElems(video0Elem, video0Elem);
+  });
+  video1Elem.on("loadedmetadata", () => {
+    initVideoElems(video0Elem, video0Elem);
+  });
 
   const cSessionIdCookie = Cookies.get("cSessionId")
   const cSessionIdUrl = new URLSearchParams(window.location.search).get("cSession");
@@ -72,6 +69,30 @@ function initClient(qSession){
   }
   hideURLParams(["cSession"]);
   $("#qSessionId").text("qSession: " + qSessionId);
+}
+
+function initVideoElems(video0Elem, video1Elem) {
+  if (video0Elem.length && video1Elem.length) {
+    if(!isNaN(video0Elem.get(0).duration) && !isNaN(video1Elem.get(0).duration)) {
+      let mainVideoElem;
+      if (video0Elem.get(0).duration <= video1Elem.get(0).duration)
+        mainVideoElem = video0Elem;
+      else
+        mainVideoElem = video1Elem;
+      mainVideoElem.on("timeupdate", () => updateProgressBar(mainVideoElem));
+      mainVideoElem.on("ended", () => {
+        isFinished.add(0);
+        let playIcon = $("#audioPlayIcon");
+        playIcon.show();
+        $("#audioPauseIcon").hide();
+        playIcon.parent().css("background", "#C5E1A5");
+        video0Elem.get(0).pause();
+        video1Elem.get(0).pause();
+        video0Elem.get(0).currentTime = 0;
+        video1Elem.get(0).currentTime = 0;
+      });
+    }
+  }
 }
 
 function playPauseAudio(id){
@@ -163,7 +184,6 @@ function submitAnswer(){
       key = parseInt(key);
       if(!audioElems[key].get(0).paused) {
         audioElems[key].get(0).pause();
-        audioElems[key].get(0).currentTime = 0;
       }
     }
     if(video0Elem.length && video1Elem.length){
