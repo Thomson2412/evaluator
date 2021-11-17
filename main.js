@@ -126,10 +126,10 @@ async function main(){
                     if(thankYouFiles.length > 0){
                         options["thankYouImg"] = thankYouFiles[getRandomInt(thankYouFiles.length)];
                     }
-                    if (question["type"] === 2){
+                    if (question["type"] === 2 || question["type"] === 7){
                         let mutedArr = [false, true]
                         let contentArr = [...question["content"]];
-                        const randomInt = getRandomInt(1);
+                        const randomInt = getRandomInt(2);
                         if (randomInt === 1) {
                             contentArr.push(contentArr.shift());
                             mutedArr.push(mutedArr.shift());
@@ -141,7 +141,7 @@ async function main(){
                     if (question["type"] === 3){
                         let contentArrFull = [...question["content"]];
                         let contentArrImg = [contentArrFull[0], contentArrFull[1]]
-                        const randomInt = getRandomInt(1);
+                        const randomInt = getRandomInt(2);
                         if (randomInt === 1) {
                             contentArrFull[0] = contentArrImg[1];
                             contentArrFull[1] = contentArrImg[0];
@@ -149,10 +149,10 @@ async function main(){
                         }
                         options["content"] = contentArrFull;
                     }
-                    if (question["type"] === 4 || question["type"] === 5){
+                    if (question["type"] === 4 || question["type"] === 5 || question["type"] === 6){
                         let contentArrFull = [...question["content"]];
                         let contentArrAudio;
-                        if(question["type"] === 4)
+                        if(question["type"] === 4 || question["type"] === 6)
                             contentArrAudio = contentArrFull.slice(1);
                         else
                             contentArrAudio = contentArrFull;
@@ -160,7 +160,7 @@ async function main(){
                         contentArrAudio.forEach((a, i) => contentArrIDAudio.push({"id": i, "audio": a}))
                         shuffle(contentArrIDAudio)
                         let contentOut = [];
-                        if(question["type"] === 4){
+                        if(question["type"] === 4 || question["type"] === 6){
                             let contentImg = contentArrFull[0];
                             contentOut.push(contentImg);
                         }
@@ -315,7 +315,8 @@ async function putAnswer(client, qSessionId, cSession, answer){
         else {
             answer = null;
         }
-        if((question["type"] === 2 || question["type"] === 3) && qSessionList[qSessionId]["shifted"]){
+        if((question["type"] === 2 || question["type"] === 3 || question["type"] === 7)
+            && qSessionList[qSessionId]["shifted"]){
             if(answer === 1){
                 answer = 2;
             }
@@ -323,7 +324,7 @@ async function putAnswer(client, qSessionId, cSession, answer){
                 answer = 1;
             }
         }
-        if((question["type"] === 4 || question["type"] === 5) && answer !== null) {
+        if((question["type"] === 4 || question["type"] === 5 || question["type"] === 6) && answer !== null) {
             if (answer >= 0) {
                 let order = qSessionList[qSessionId]["order"];
                 answer = order[parseInt(answer) - 1];

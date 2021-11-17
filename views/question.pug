@@ -148,6 +148,56 @@ script.
                     br
                     a(href="content/" + content[3]) Here is a link to the audio instead.
             #progressBar.progressBar
+        if type === 6
+            #paintingContent
+                .paintingLabel
+                    img(src="content/" + content[0]).paintingContentMC
+            | Please listen to all audio fragments.
+            br
+            button#playPauseButton0(onclick='playPauseAudio(0)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon0.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon0.audioContent
+                br
+                | 1
+            audio#audioSource0(src="content/" + content[1] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[1]) Here is a link to the audio instead.
+            button#playPauseButton1(onclick='playPauseAudio(1)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon1.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon1.audioContent
+                br
+                | 2
+            audio#audioSource1(src="content/" + content[2] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[2]) Here is a link to the audio instead.
+            button#playPauseButton2(onclick='playPauseAudio(2)')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon2.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon2.audioContent
+                br
+                | 3
+            audio#audioSource2(src="content/" + content[3] playsinline)
+                p Your browser doesn't support HTML5 audio.
+                    br
+                    a(href="content/" + content[3]) Here is a link to the audio instead.
+            #progressBar.progressBar
+        if type === 7
+            #videoContent.videoContent
+                .videoLabel
+                    video#videoSource0.videoSource(src="content/" + content[0], muted=true playsinline)
+                        p Your browser doesn't support HTML5 video.
+                    br
+                    | #{scaleLow}
+                .videoLabel
+                    video#videoSource1.videoSource(src="content/" + content[1] muted=true playsinline)
+                        p Your browser doesn't support HTML5 video.
+                    br
+                    | #{scaleHigh}
+            button#playPauseButton(onclick='playPauseVideo()')
+                img(src="icons/outline_play_circle_filled_black_24dp.png")#audioPlayIcon.audioContent
+                img(src="icons/baseline_pause_circle_black_24dp.png" style='display: none;')#audioPauseIcon.audioContent
+            #progressBar.progressBar
     #questionContainer.questionContainer
         .question #{question}
         if type === 0 || type === 1
@@ -173,7 +223,7 @@ script.
                 label
                     input(type='radio' name='radioForm' value='7' onclick='onFormClick()')
                     | #{scaleHigh}
-        if type === 2 || type === 3
+        if type === 2 || type === 3 || type === 7
             form#radioForm.radioForm(action='')
                 label
                     input(type='radio' name='radioForm' value='1' onclick='onFormClick()')
@@ -195,6 +245,20 @@ script.
                 label
                     input(type='radio' name='radioForm' value='4' onclick='onFormClick()')
                     | 4
+                label
+                    input(type='radio' name='radioForm' value='-1' onclick='onFormClick()')
+                    | None
+        if type === 6
+            form#radioForm.radioForm(action='')
+                label
+                    input(type='radio' name='radioForm' value='1' onclick='onFormClick()')
+                    | 1
+                label
+                    input(type='radio' name='radioForm' value='2' onclick='onFormClick()')
+                    | 2
+                label
+                    input(type='radio' name='radioForm' value='3' onclick='onFormClick()')
+                    | 3
                 label
                     input(type='radio' name='radioForm' value='-1' onclick='onFormClick()')
                     | None
